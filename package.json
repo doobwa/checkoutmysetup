@@ -1,7 +1,11 @@
 {
-  "name": "node-example",
+  "name": "mysetup-demo",
   "version": "0.0.1",
   "dependencies": {
-    "express": "2.2.0"
+    "express": "2.4.3",
+    "everyauth": "",
+    "mongoose": "1.8.1",
+    "mongoose-auth": "",
+    "jade": "0.14.1"
   }
 }
