@@ -277,4 +277,7 @@ app.get('/about', function (req, res) {
 
 mongooseAuth.helpExpress(app);
 
-app.listen(40604);
+var port = process.env.PORT || 3000;
+app.listen(port, function() {
+  console.log("Listening on " + port);
+});
