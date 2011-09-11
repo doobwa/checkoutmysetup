@@ -1,0 +1,16 @@
+link(type="text/css", rel="stylesheet",href="/stylesheets/extra.css") 
+.row
+ .span4.columns
+   b &nbsp;
+ .span4.columns
+   - if ('undefined' !== typeof errors && errors.length)
+    ul#errors
+     - each error in errors
+      li.error= error
+   .forms
+    form(action='/login', method='POST')
+     fieldset
+       input.large(type='text',placeholder="email", name=everyauth.password.loginFormFieldName, value=email)
+       input.large(type='password',placeholder="password", name=everyauth.password.passwordFormFieldName)
+       input.btn.success(type='submit') Login
+ .span2.columns

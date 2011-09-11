@@ -1,0 +1,43 @@
+script(src="/javascripts/royal-slider-5.0.min.js")
+script(src="/javascripts/jquery.easing.1.3.min.js")
+script(src="/javascripts/explore.js")
+link(type="text/css", rel="stylesheet",href="/stylesheets/extra.css") 
+link(type="text/css", rel="stylesheet",href="/stylesheets/royal-slider-5.0.css")
+// Above destroy
+
+.row
+ - if (typeof setups == "undefined")
+   p problem loading setups
+ - else
+  #bannersContainer
+    #myGallery1.royalSlider.clearfix
+      .royalLoadingScreen
+        p Loading
+      ul#testId.royalSlidesContainer
+        - each setup in setups
+           li.royalSlide
+             a.setuplink(href= setup.directurl)
+               img(style="margin-left: 180px;",width="600px",src= setup.url)
+             .royalCaption
+               
+      a.arrow.left
+      a.arrow.right
+      .royalControlNavOverflow
+        .royalControlNavContainer
+          .royalControlNavCenterer
+            - each setup in setups
+              a(href="#")
+               //.royalCaptionItem(style="left: 23%; margin-top:20px; text-align: center; color: rgb(51, 56, 62); width: 100%; display: block;")= setup.title
+
+.row
+   .span4.columns
+        h3 chris dubois
+        p Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+   .span6.columns
+       h3 setups
+       ul
+         -each setup in setups
+           li
+              a.setuplink(href= setup.directurl) #{setup.title}
+   .span5.columns
+        h3 recommended

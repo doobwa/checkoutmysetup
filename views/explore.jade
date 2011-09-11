@@ -1,0 +1,30 @@
+script(src="/javascripts/royal-slider-5.0.min.js")
+script(src="/javascripts/jquery.easing.1.3.min.js")
+script(src="/javascripts/explore.js")
+link(type="text/css", rel="stylesheet",href="/stylesheets/extra.css") 
+link(type="text/css", rel="stylesheet",href="/stylesheets/royal-slider-5.0.css")
+// Above destroy
+
+.row
+ - if (typeof setups == "undefined")
+   p problem loading setups
+ - else
+  #bannersContainer
+    #myGallery1.royalSlider.clearfix
+      .royalLoadingScreen
+        p Loading
+      ul#testId.royalSlidesContainer
+        - each setup in setups
+           li.royalSlide
+             a.setuplink(href= setup.directurl)
+               img(width=600,style="margin-left: 160px; margin-bottom: 0px;",src= setup.url)
+             .royalCaption
+               
+      a.arrow.left(href="#")
+      a.arrow.right(href="#")
+      //
+       .royalControlNavOverflow.royalThumbs(style="left:38px;width:884px;")
+        .royalControlNavThumbsContainer(style="width:1628px;left:0px;")
+            - each setup in setups
+              a.royalThumb(href="#",style="background-image:url(http://i.imgur.com/5j2CRs.jpg)")
+

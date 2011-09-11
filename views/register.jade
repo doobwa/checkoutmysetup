@@ -1,0 +1,32 @@
+script(src="javascripts/royal-slider-5.0.min.js")
+script(src="javascripts/jquery.easing.1.3.min.js")
+link(type="text/css", rel="stylesheet",href="/stylesheets/register.css") 
+link(type="text/css", rel="stylesheet",href="/stylesheets/royal-slider-5.0.css") 
+//
+ .row
+  #bannersContainer
+    #myGallery1.royalSlider.clearfix
+      .royalLoadingScreen
+        p Loading
+      ul#testId.royalSlidesContainer
+        li.royalSlide
+          img(src="http://news.m3n4.com/wp-content/uploads/A+NOITE+ESTRELADA+vincent+van+gogh1.jpg",width=700)
+          .royalCaption
+            .royalCaptionItem.midTextWithBG(data-easing="easeOutSine", data-show-effect="moveleft fade", data-move-offset="50", style="top:59px;  background-color:#ddd; left:71px;") Use Slider
+
+.container-fluid
+  .sidebar
+    - if ('undefined' !== typeof errors && errors.length)
+      div.alert-message.error(style="margin-top:15px;")
+       ul#errors
+         - each error in errors
+           li.error
+              p= error
+    #forms
+        form(action='/register', method='POST')
+          input.medium(type='text', name='name.first', placeholder="Username")
+          input.medium(type='text', name=everyauth.password.loginFormFieldName, value=userParams[everyauth.password.loginFormFieldName],placeholder="Email",autocomplete='false')
+          input.medium(type='password', name=everyauth.password.passwordFormFieldName,placeholder="Password",autocomplete='false')
+          input.btn.success(type="submit",value="Create a Setup")
+
+script(src="javascripts/register.js")

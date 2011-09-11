@@ -1,0 +1,49 @@
+!!! 5
+html
+  head
+    title MySetup
+    link(type="text/css", rel="stylesheet",href="http://twitter.github.com/bootstrap/assets/css/bootstrap-1.2.0.min.css")
+    link(type="text/css", rel="stylesheet",href="/stylesheets/todos-inimage.css")  
+    link(type="text/css", rel="stylesheet",href="/stylesheets/markerhover.css") 
+    link(type="text/css", rel="stylesheet",href="/stylesheets/extra.css") 
+    //script(type="text/javascript", src="/javascripts/json2.js")
+    script(type="text/javascript", src="/javascripts/jquery-1.5.js")
+    script(type="text/javascript", src="/javascripts/underscore-1.1.6.js")
+    script(type="text/javascript", src="/javascripts/backbone.js")
+    script(type="text/javascript", src="/javascripts/backbone-relational.js")
+    script(type="text/javascript", src="http://static.ak.fbcdn.net/connect/en_US/core.js")
+    script(type="text/javascript", src="/javascripts/jquery.editinplace.js")
+    //script(type="text/javascript", src="/javascripts/layout.js")
+  body
+    .topbar
+     .topbar-inner
+      .container
+        h3
+          a.logo(href="/") setups
+        ul.nav
+          li
+            a(href="/explore") browse
+          - if (everyauth.loggedIn)
+            li
+              a(href="/manage") manage 
+          li
+            a(href="/about") about
+       
+        //
+         form(action="")
+          input(type="text",placeholder="Search")
+        ul.nav.secondary-nav
+          li
+             - if (!everyauth.loggedIn)
+              #password-login
+                a(href="/login") login
+             - else
+              a(href="/logout") logout
+              //
+               ul.menu-dropdown
+                li
+                  a(href="#") account settings
+                li
+                  a(href="#") logout
+    div(class="container", style="margin-top:60px;")!= body
+      #setupapp

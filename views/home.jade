@@ -1,0 +1,58 @@
+link(type="text/css", rel="stylesheet",href="/stylesheets/home.css") 
+link(type="text/css", rel="stylesheet",href="/stylesheets/register.css") 
+script(type="text/javascript", src="/javascripts/home.js")
+
+
+script#setup-template(type="text/template")
+  div.display
+    div.setup-text(style="float:left;")
+    .controls(style="font-size:small;float:right;")
+      a edit
+      &nbsp;
+      a delete
+    // div.setup-destroy
+  div.edit
+    input.setup-input(type="textbox",value="")
+                  
+
+- if (!everyauth.loggedIn)
+  .row
+    .span8.columns
+      h2 share your setup
+    .span6.columns.offset2
+      .well
+        b get started by
+        a(href='/register') register
+        #fb-login.fb_button(style='background-position:left -188px')
+          a.fb_button_medium(href='/auth/facebook')
+            span#fb_login_text.fb_button_text
+              Connect with Facebook
+- else
+ #setupapp
+   .row
+      .span5.columns
+       .well
+        .content
+          #forms
+              form(action='/setups', method='POST')
+                input.large(type='text', name="title", placeholder="title")
+                input.large(type='text', name="url",placeholder="photo url")
+                textarea.large.clearfix(type='text', name="description",placeholder="description")
+                input.btn.success(type='submit',value="add setup") 
+
+      .span5.columns.offset1
+        .well
+          div#setups
+              ul#setup-list
+      .span4.columns.offset1
+        b Tips
+        p Once you have entered basic information for your setup, you can begin tagging it.
+
+// // 
+//  .row
+//       h2 User data
+//         // p `user.id` #{user.id} - `everyauth.user.id` #{everyauth.user.id}
+//         - if (everyauth.facebook)
+//            h3 Facebook User Data
+//            p= JSON.stringify(everyauth.facebook.user)
+

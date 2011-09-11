@@ -1,0 +1,40 @@
+#register {
+    margin-top:30px;
+}
+#forms input {
+    margin:10px;
+}
+#forms textarea {
+    margin:10px;
+}
+        #myGallery1 {
+            width: 100%;			
+            height: 400px;
+        }
+        .royalSlider .sgMidText {	
+			font-size:1.3em;
+		}
+		.royalSlider .sgSmallText {	
+			font-size:0.8em;	
+		}
+		.tintButton {			
+			background:no-repeat 0 0;
+			background-color:#33383e;
+			color:#EAEAEA;
+			cursor:pointer;
+			padding:5px 12px;
+			
+			-webkit-transition: background-color .2s ease-out;
+			-moz-transition: background-color .2s ease-out;	
+			-o-transition: background-color .2s ease-out;	
+			transition: background-color .2s ease-out;
+		}
+		.tintButton:hover {
+			background-color:#EAEAEA;
+			color:#33383e;
+		}
+		.royalSlider .royalCaption {
+			position:absolute;		
+			top:0;
+			left:0;
+		}		

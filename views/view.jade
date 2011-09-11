@@ -1,0 +1,32 @@
+script(type="text/javascript", src="/javascripts/view.js")
+#setupapp
+ .row
+
+  div.span10.columns
+   
+   #markerapp
+        #imgtag
+          img(width="600px",src= setup.url)
+          #tmp-marker.hidden
+            #tmp-box.highlight
+            textarea(id="new-marker", placeholder="describe an item", type='text')
+          #markers
+            #marker-list
+   script#item-template(type="text/template")
+            div.highlight
+             div.display
+              div.highlight-text
+              span.marker-destroy
+             div.edit
+              input.marker-input(type="textbox",value="")
+
+  div.span5.columns.offset1
+     h1#setuptitle= setup.title
+     p by 
+       a(href="#{user.directurl}")= user.name.first
+     p= setup.description
+     p 
+     <div id="fb-root"></div>
+     <div class="fb-like" data-href="http://glowing-beach-290.herokuapp.com" data-send="true" data-layout="box_count" data-width="50" data-show-faces="false"></div>
+  
+

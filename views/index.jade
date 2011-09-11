@@ -1,0 +1,54 @@
+h1 MySetup
+h2 Register
+- if (everyauth.loggedIn)
+  h2 Authenticated
+  #user-id Logged in with `user.id` #{user.id} - aka `everyauth.user.id` #{everyauth.user.id}
+  - if (everyauth.facebook)
+    h3 Facebook User Data
+    p= JSON.stringify(everyauth.facebook.user)
+- else
+  h2 Not Authenticated
+  #register
+    a(href='/register') Register
+  #password-login
+    a(href='/login', style='border: 0px') Login with Password
+  #fb-login.fb_button(style='float: left; background-position:left -188px')
+    a.fb_button_medium(href='/auth/facebook')
+      span#fb_login_text.fb_button_text
+        Connect with Facebook
+ //
+//  - if ('undefined' !== typeof errors && errors.length)
+//   ul#errors
+//     - each error in errors
+//       li.error= error
+//  form(action='/register', method='post')
+//   #login
+//     label(for=everyauth.password.loginFormFieldName) Login
+//     input(type='text', name=everyauth.password.loginFormFieldName, value=userParams[everyauth.password.loginFormFieldName])
+//   #password
+//     label(for=everyauth.password.passwordFormFieldName) Password
+//     input(type='password', name=everyauth.password.passwordFormFieldName)
+//   #submit
+//     input(type='submit') Register
+
+// h2 Login
+// - if ('undefined' !== typeof errors && errors.length)
+//   ul#errors
+//     - each error in errors
+//       li.error= error
+// form(action='/login', method='post')
+//   #login
+//     label(for=everyauth.password.loginFormFieldName) Login
+//     input(type='text', name=everyauth.password.loginFormFieldName, value=email)
+//   #password
+//     label(for=everyauth.password.passwordFormFieldName) Password
+//     input(type='password', name=everyauth.password.passwordFormFieldName)
+//   #submit
+//     input(type='submit') Login
+
+// h2 Login with Facebook
+// #fb-login.fb_button(style='background-position: left -188px')
+//     a.fb_button_medium(href='/auth/facebook')
+//       span#fb_login_text.fb_button_text
+//         Connect with Facebook
+

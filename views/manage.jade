@@ -1,0 +1,64 @@
+link(type="text/css", rel="stylesheet",href="/stylesheets/extra.css") 
+link(type="text/css", rel="stylesheet",href="/stylesheets/manage.css") 
+script(type="text/javascript", src="/javascripts/manage.js")
+
+
+script#setup-template(type="text/template")
+  div.display
+    div.setup-text(style="float:left;")
+    .controls(style="font-size:small;float:right;")
+      a.editbtn(href="#") edit
+      &nbsp;
+      a.deletebtn(href="#") delete
+  div.edit
+   .forms
+     form
+      input.large.input-title(type='text', name="title")
+      input.large.input-url(type='text', name="url",placeholder="photo url")
+      textarea.large.clearfix.input-description(type='text', name="description",placeholder="description",rows=6)
+      a(href="#").btn.primary.savebtn(style="margin:2px;") save setup
+      a(href="#").btn.cancelbtn cancel
+
+- if (!everyauth.loggedIn)
+  .row
+    .span8.columns
+      h2 please login or register
+    .span6.columns.offset2
+      .well
+        a(href='/register') register
+        //
+         #fb-login.fb_button(style='background-position:left -188px')
+          a.fb_button_medium(href='/auth/facebook')
+            span#fb_login_text.fb_button_text
+              Connect with Facebook
+- else
+ #setupapp
+   .row
+      .span5.columns
+        h3 profile info
+        p #{user.id} #{user.email}
+      .span5.columns.offset1
+        h3 my setups
+        .well
+          #setups
+              ul#setup-list(style="margin:0px;list-style:none;")
+      .span5.columns
+       h3 add a setup
+       .well
+        .content
+          .forms
+              form(action='/setups', method='POST')
+                input.large(type='text', name="title", placeholder="title")
+                input.large(type='text', name="url",placeholder="photo url")
+                textarea.large.clearfix(type='text', name="description",placeholder="description",rows=6)
+                input.btn.success(type='submit',value="save setup") 
+              p Looking to upload a photo?  Try <a href="http://imgur.com">imgur</a>.
+
+// // 
+//  .row
+//       h2 User data
+//         // p `user.id` #{user.id} - `everyauth.user.id` #{everyauth.user.id}
+//         - if (everyauth.facebook)
+//            h3 Facebook User Data
+//            p= JSON.stringify(everyauth.facebook.user)
+
