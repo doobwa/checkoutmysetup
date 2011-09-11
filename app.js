@@ -93,7 +93,7 @@ var app = express.createServer(
 app.configure( function () {
   app.set('views', __dirname + '/views');
   app.set('view engine', 'jade');
-  app.register('.html', require('ejs'));
+//  app.register('.html', require('ejs'));
   app.use(express.bodyParser());
   app.use(express.methodOverride());
   app.use(require('stylus').middleware({ src: __dirname + '/public' }));
