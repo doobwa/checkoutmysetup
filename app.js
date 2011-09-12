@@ -65,7 +65,7 @@ UserSchema.plugin(mongooseAuth, {
           , loginView: 'login.jade'
           , getRegisterPath: '/register'
           , postRegisterPath: '/register'
-          , registerView: 'register.jade' // register.jade
+          , registerView: 'about.jade' // register.jade
           , loginSuccessRedirect: '/manage'
           , registerSuccessRedirect: '/manage'
         }
@@ -86,8 +86,6 @@ User = mongoose.model('User');
 Setup = mongoose.model('Setup');
 Marker = mongoose.model('Marker');
 Request = mongoose.model('Request');
-
-//var Resource = require('express-resource');
 
 var app = express.createServer(
     express.bodyParser()
@@ -253,6 +251,9 @@ app.get('/', function (req, res) {
     res.redirect('mine');
   }  
 });
+app.get('/request',function(req,res) {
+  res.send('Interested?  Request an invite and we will let you know:\n curl -X POST -d "email=YOUREMAIL" http://glowing-beach-290.herokuapp.com/request');
+});
 app.post('/request',function(req,res) {
   Request.find({email:req.body.email},function(err,rs) {
     if (rs.length>0) {
@@ -273,8 +274,7 @@ app.post('/request',function(req,res) {
 app.get('/register/:email/coupon/:id', function (req, res) {
   Request.find({email:req.params.email},function(err,request) {
     if (request[0].coupon == req.params.id) {
-      res.redirect('/register');
-      //, {title:'login',});
+      res.render('register',{title:'login',everyauth:everyauth,userParams:{}});
     } else {
       res.send('email/coupon code not correct');
     }
