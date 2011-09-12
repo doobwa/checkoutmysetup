@@ -17,6 +17,11 @@ var MarkerSchema = new Schema({
   , y      : String
 });
 
+var RequestSchema = new Schema({
+  email : String,
+  coupon : String
+});
+
 var SetupSchema = new Schema({
   title: String,
   url: String,
@@ -60,7 +65,7 @@ UserSchema.plugin(mongooseAuth, {
           , loginView: 'login.jade'
           , getRegisterPath: '/register'
           , postRegisterPath: '/register'
-          , registerView: 'register.jade'
+          , registerView: 'register.jade' // register.jade
           , loginSuccessRedirect: '/manage'
           , registerSuccessRedirect: '/manage'
         }
@@ -71,6 +76,7 @@ UserSchema.plugin(mongooseAuth, {
 mongoose.model('User', UserSchema);
 mongoose.model('Setup', SetupSchema);
 mongoose.model('Marker', MarkerSchema);
+mongoose.model('Request', RequestSchema);
 
 //mongoose.connect('mongodb://localhost/mysetup-dev');
 mongoose.connect('mongodb://chris:dingleberry@staff.mongohq.com:10076/app941158');
@@ -79,6 +85,7 @@ mongoose.connect('mongodb://chris:dingleberry@staff.mongohq.com:10076/app941158'
 User = mongoose.model('User');
 Setup = mongoose.model('Setup');
 Marker = mongoose.model('Marker');
+Request = mongoose.model('Request');
 
 //var Resource = require('express-resource');
 
@@ -158,6 +165,8 @@ app.put('/setups/:id',loadSetup,andRestrictToSelf,function(req, res) {
   req.setup.title = req.body.title;
   req.setup.url = req.body.url;
   req.setup.description = req.body.description;
+  // Make a short url via bit.ly
+  req.setup.shorturl = 'http://api.bitly.com/v3/shorten?login=chrisdubois&apiKey=R_46c7bee365ae8711c76b255cd45551ed&longUrl=http%3A%2F%2Fbetaworks.com%2F&format=json';
   req.setup.save(function (err) {
     if (!err) console.log('Setup updated to:'+req.setup.title);
   });
@@ -199,6 +208,19 @@ function loadUser(req, res, next) {
   }
  });
 }
+function randomString(length) {
+    var chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz'.split('');
+    
+    if (! length) {
+        length = Math.floor(Math.random() * chars.length);
+    }
+    
+    var str = '';
+    for (var i = 0; i < length; i++) {
+        str += chars[Math.floor(Math.random() * chars.length)];
+    }
+    return str;
+}
 
 // MARKERS API
 
@@ -231,8 +253,32 @@ app.get('/', function (req, res) {
     res.redirect('mine');
   }  
 });
-app.get('/register', function (req, res) {
-  res.render('register', {title:'login',});
+app.post('/request',function(req,res) {
+  Request.find({email:req.body.email},function(err,rs) {
+    if (rs.length>0) {
+      res.send('That email already has a request pending.\n');
+    } else {
+      var r = new Request({email:req.body.email,coupon:randomString(10)});
+      r.save(function(err) {
+        if (err) {
+          res.send('An error occurred.  Please try again later.\n');
+        } else {  
+          res.send('Your request has been received.  We will email you when we have spots available.\n');
+        };
+      });
+    }
+  });
+
+});
+app.get('/register/:email/coupon/:id', function (req, res) {
+  Request.find({email:req.params.email},function(err,request) {
+    if (request[0].coupon == req.params.id) {
+      res.redirect('/register');
+      //, {title:'login',});
+    } else {
+      res.send('email/coupon code not correct');
+    }
+  });
 });
 app.get('/manage', function (req, res) {
   res.render('manage', {title:'login'});
