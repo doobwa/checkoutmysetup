@@ -1,23 +1,6 @@
-function loadUser(req, res, next) {
- User.findById(req.userid, function (err, user) {
-  if (!err) {
-    req.user = user;
-    next();
-  } else {
-    next(new Error('Failed to load user ' + req.userid));
-  }
- });
-}
-function andRestrictToSelf(req, res, next) {
-  if (req.user) {
-   req.user.id == req.setup.user_id
-    ? next()
-    : next(new Error('Unauthorized'));
-  } else {
-    next(new Error('Not logged in'));
-  }
-}
 var Setup = require('../models/setup');
+var rest = require('restler');
+
 module.exports = function(app) {
   app.param('setupid', function(req, res, next, setupid){
     Setup.findOne({ _id : req.params.setupid }, function(err,setup) {
@@ -61,31 +44,31 @@ module.exports = function(app) {
       }
     });
   });
-  app.get('/setups/:setupid',loadUser,function(req, res) {
+  app.get('/setups/:setupid',function(req, res) {
     //  req.setup.directurl = 'setups/' + req.setup._id + '/';
     //  req.user.directurl = 'users/' + req.user._id + '/';
-    if (req.setup.shorturl == null) {
-      var d = 'glowing-beach-290.herokuapp.com';
-      var b = 'http://api.bitly.com/v3/shorten?login=chrisdubois&apiKey=R_46c7bee365ae8711c76b255cd45551ed&longUrl=';
-      var u = 'http%3A%2F%2F' + d + '%2Fsetups%2F' + req.setup._id;
-      //api.bitly.com/v3/shorten?login=chrisdubois&apiKey=R_46c7bee365ae8711c76b255cd45551ed&longUrl=http%3A%2F%2Fbetaworks.com%2F&format=json
-      rest.get(b + u).on('complete', function(data) {
-        console.log('getting short url:' + data.data.url);
-        req.setup.shorturl = data.data.url;
-        req.setup.save(function(err) {
-          if (err) {          
-            console.log('problem saving shorturl');
-          } else {
-            console.log('saved shorturl');
-          }
-        });
-      });
-    }
-    res.render('view',{setup:req.setup,user:req.user,title:'view setup'});
+//    console.log(req.user);
+    // if (req.setup.shorturl == null) {
+    //   var d = 'glowing-beach-290.herokuapp.com';
+    //   var b = 'http://api.bitly.com/v3/shorten?login=chrisdubois&apiKey=R_46c7bee365ae8711c76b255cd45551ed&longUrl=';
+    //   var u = 'http%3A%2F%2F' + d + '%2Fsetups%2F' + req.setup._id;
+    //   //api.bitly.com/v3/shorten?login=chrisdubois&apiKey=R_46c7bee365ae8711c76b255cd45551ed&longUrl=http%3A%2F%2Fbetaworks.com%2F&format=json
+    //   rest.get(b + u).on('complete', function(data) {
+    //     console.log('getting short url:' + data.data.url);
+    //     req.setup.shorturl = data.data.url;
+    //     req.setup.save(function(err) {
+    //       if (err) {          
+    //         console.log('problem saving shorturl');
+    //       } else {
+    //         console.log('saved shorturl');
+    //       }
+    //     });
+    //   });
+    // }
+//user:req.user,
+    res.render('view',{setup:req.setup,title:'view setup'});
   });
   app.get('/setups/:setupid/edit',loadUser,andRestrictToSelf,function(req, res) {
-    req.setup.directurl = 'setups/' + req.setup._id + '/';
-    req.user.directurl = 'users/' + req.user._id + '/';
     res.render('edit',{setup:req.setup,user:req.user,title:'edit setup'});
   });
 
@@ -120,3 +103,25 @@ module.exports = function(app) {
     console.log('putting to markers');
   });
 };
+
+
+function loadUser(req, res, next) {
+  User = require("../models/user");
+ User.findById(req.userid, function (err, user) {
+  if (!err) {
+    req.user = user;
+    next();
+  } else {
+    next(new Error('Failed to load user ' + req.userid));
+  }
+ });
+}
+function andRestrictToSelf(req, res, next) {
+  if (req.user) {
+   req.user.id == req.setup.user_id
+    ? next()
+    : next(new Error('Unauthorized'));
+  } else {
+    next(new Error('Not logged in'));
+  }
+}

@@ -2,6 +2,8 @@ var express = require('express');
 var http = require('http');
 var rest = require('restler');
 var conf = require('./conf');
+
+// Database connectivity
 var mongooseAuth = require('mongoose-auth');
 var mongoose = require('mongoose');
 var everyauth = require('everyauth');
@@ -53,7 +55,8 @@ UserSchema.plugin(mongooseAuth, {
         }
     }
 });
-// Adds login: String
+
+var Setup = require('./models/setup');
 
 User = mongoose.model('User', UserSchema);
 
@@ -78,12 +81,115 @@ app.configure( function () {
 });
 
 
-// // ROUTES
-//   app.get('/users/:id/setups',function(req, res) {
-//     Setup.find({user_id:req.params.id}, function (err, setups) {
-//       res.send(setups);
-//     });
-//   });
+// ROUTES
+
+  app.param('setupid', function(req, res, next, setupid){
+    Setup.findOne({ _id : req.params.setupid }, function(err,setup) {
+      if (err) return next(err);
+      if (!setup) return next(new Error('Failed to load setup ' + setupid));
+      req.setup = setup;
+      next();
+    });
+  })
+  app.get('/setups',function(req, res) {
+    if (!req.loggedIn) {
+      res.redirect('/login');
+    } else {
+      Setup.find({user_id:req.user.id},function(err,docs) {
+        res.send(docs);
+      });
+    }
+  });
+  app.post('/setups',function(req, res) {
+    if (!req.loggedIn) {
+      res.redirect('/login');
+    } else {
+      var s = new Setup({
+        title:req.body.title,
+        url: req.body.url,
+        description: req.body.description,
+        user_id: req.user._id
+      });
+      s.save(function (err) {
+        if (!err) console.log('Success!');
+      });
+      res.redirect('/manage');
+    }
+  });
+  app.delete('/setups/:setupid',andRestrictToSelf,function(req, res) {
+    Setup.remove({_id:req.params.setupid}, function (err) {
+      if (!err) {
+        console.log('successfully removed setup'+req.params.setupid);
+      } else {
+        console.log('failed to remove setup'+req.params.setupid);
+      }
+    });
+  });
+  app.get('/setups/:setupid',function(req, res) {
+    //  req.setup.directurl = 'setups/' + req.setup._id + '/';
+    //  req.user.directurl = 'users/' + req.user._id + '/';
+//    console.log(req.user);
+    // if (req.setup.shorturl == null) {
+    //   var d = 'glowing-beach-290.herokuapp.com';
+    //   var b = 'http://api.bitly.com/v3/shorten?login=chrisdubois&apiKey=R_46c7bee365ae8711c76b255cd45551ed&longUrl=';
+    //   var u = 'http%3A%2F%2F' + d + '%2Fsetups%2F' + req.setup._id;
+    //   //api.bitly.com/v3/shorten?login=chrisdubois&apiKey=R_46c7bee365ae8711c76b255cd45551ed&longUrl=http%3A%2F%2Fbetaworks.com%2F&format=json
+    //   rest.get(b + u).on('complete', function(data) {
+    //     console.log('getting short url:' + data.data.url);
+    //     req.setup.shorturl = data.data.url;
+    //     req.setup.save(function(err) {
+    //       if (err) {          
+    //         console.log('problem saving shorturl');
+    //       } else {
+    //         console.log('saved shorturl');
+    //       }
+    //     });
+    //   });
+    // }
+//user:req.user,
+    res.render('view',{setup:req.setup,title:'view setup'});
+  });
+  app.get('/setups/:setupid/edit',loadUser,andRestrictToSelf,function(req, res) {
+    res.render('edit',{setup:req.setup,user:req.user,title:'edit setup'});
+  });
+
+  app.put('/setups/:setupid',andRestrictToSelf,function(req, res) {
+    req.setup.title = req.body.title;
+    req.setup.url = req.body.url;
+    req.setup.description = req.body.description;
+    req.setup.save(function (err) {
+      if (!err) console.log('Setup updated to:'+req.setup.title);
+    });
+  });
+
+
+  app.get('/setups/:setupid/markers',function(req, res) {
+    res.send(req.setup.markers);
+  });
+  app.post('/setups/:setupid/markers',andRestrictToSelf,function(req, res) {
+    req.setup.markers.push({text:req.body.text,x:req.body.x,y:req.body.y});
+    req.setup.save();
+    res.send(req.setup.markers);
+  });
+  app.delete('/setups/:setupid/markers/:marker',andRestrictToSelf,function(req, res) {
+    req.setup.markers.id(req.params.marker).remove();
+    req.setup.save(function (err) {
+      if (!err) console.log('removal successful');
+      else console.log('remove failed');
+    });
+  });
+
+  //UNIMPLEMENTED  (AND UNUSED)
+  app.put('/setups/:setupid/markers',function(req, res) {
+    console.log('putting to markers');
+  });
+
+  app.get('/users/:id/setups',function(req, res) {
+    Setup = require('./models/setup');
+    Setup.find({user_id:req.params.id}, function (err, setups) {
+      res.send(setups);
+    });
+  });
 app.get('/', function (req, res) {
   if (!req.user) {
     res.redirect('login');
@@ -91,76 +197,49 @@ app.get('/', function (req, res) {
     res.redirect('mine');
   }  
 });
-app.get('/request',function(req,res) {
-  res.send('Interested?  Request an invite and we will let you know:\n curl -X POST -d "email=YOUREMAIL" http://glowing-beach-290.herokuapp.com/request');
-});
-app.post('/request',function(req,res) {
-  Request.find({email:req.body.email},function(err,rs) {
-    if (rs.length>0) {
-      res.send('That email already has a request pending.\n');
-    } else {
-      var r = new Request({email:req.body.email,coupon:randomString(10)});
-      r.save(function(err) {
-        if (err) {
-          res.send('An error occurred.  Please try again later.\n');
-        } else {  
-          res.send('Your request has been received.  We will email you when we have spots available.\n');
-        };
-      });
-    }
-  });
-
-});
-app.get('/register/:email/coupon/:id', function (req, res) {
-  Request.find({email:req.params.email},function(err,request) {
-    if (request[0].coupon == req.params.id) {
-      res.render('register',{title:'login',everyauth:everyauth,userParams:{}});
-    } else {
-      res.send('email/coupon code not correct');
-    }
-  });
-});
 app.get('/manage', function (req, res) {
   res.render('manage', {title:'login'});
 });
-// app.get('/explore',function(req, res) {
-//   var query = Setup.find({});
-//   query.limit(5);
-//   query.skip(5);
-//   query.exec(function(err,setups) {
-//     setups = setups.map(function(setup) {
-//       setup.directurl = 'setups/' + setup._id + '/';
-//       return(setup)
-//     });
-//     res.render('explore',{setups:setups.sort(randOrd),title:'explore'});
-//   });
-// });
-// app.get('/mine',function(req, res) {
-//   if (!req.user) {
-//     res.send('Not logged in');
-//   } else {
-//   Setup.find({user_id:req.user.id},function(err,setups) {
-//     setups = setups.map(function(setup) {
-//       setup.directurl = '/setups/' + setup._id + '/';
-//       return(setup)
-//     });
-//     res.render('mine',{setups:setups,title:'explore'});
-//   });
+app.get('/explore',function(req, res) {
+  Setup = require('./models/setup');
+  var query = Setup.find({});
+  query.limit(5);
+  query.exec(function(err,setups) {
+    // setups = setups.map(function(setup) {
+    //   setup.directurl = 'setups/' + setup._id + '/';
+    //   return(setup)
+    // });
+    res.render('explore',{setups:setups,title:'explore'});
+  });
+});
+app.get('/mine',function(req, res) {
+  if (!req.user) {
+    res.redirect('manage',{title:'blha'});
+  } else {
+  Setup = require('./models/setup');
+  Setup.find({user_id:req.user.id},function(err,setups) {
+    setups = setups.map(function(setup) {
+      setup.directurl = '/setups/' + setup._id + '/';
+      return(setup)
+    });
+    res.render('mine',{setups:setups,title:'explore'});
+  });
 
-//   }
-// });
-// app.get('/login', function (req, res) {
-//     req.logout();
-//     res.redirect('/');
-// });
-// app.get('/logout', function (req, res) {
-//     req.logout();
-//     res.redirect('/');
-// });
-// app.get('/about', function (req, res) {
-//     res.render('about',{title:'about'});
-// });
-require('./routes/setups')(app)
+  }
+});
+app.get('/login', function (req, res) {
+    req.logout();
+    res.redirect('/');
+});
+app.get('/logout', function (req, res) {
+    req.logout();
+    res.redirect('/');
+});
+app.get('/about', function (req, res) {
+    res.render('about',{title:'about'});
+});
+require('./routes/setups')(app);
+require('./routes/requests')(app);
 //require('./routes/users')(app)
 
 
