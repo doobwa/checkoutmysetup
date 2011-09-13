@@ -200,56 +200,7 @@ app.put('/setups/:id',loadSetup,andRestrictToSelf,function(req, res) {
 //   });
 //   return '5';
 // }
-function randOrd(){
-  return (Math.round(Math.random())-0.5); 
-}
-function andRestrictToSelf(req, res, next) {
-  if (req.user) {
-   req.user.id == req.setup.user_id
-    ? next()
-    : next(new Error('Unauthorized'));
-  } else {
-    next(new Error('Not logged in'));
-  }
-}
-function loadSetup(req, res, next) {
-  console.log(req.params.id);
- Setup.findById(req.params.id, function (err, setup) {
-  console.log(setup);
-  if (err) {
-    res.send('Failed to find setup' + req.params.id);
-  //  req.setup = setup;
-  } else {
-    console.log('found setup:' + setup._id);
-//    req.userid = setup.user_id;
-    next();
-//    next(new Error('Failed to load setup ' + req.params.id));
-  }
-  });
-}
-function loadUser(req, res, next) {
- User.findById(req.userid, function (err, user) {
-  if (!err) {
-    req.user = user;
-    next();
-  } else {
-    next(new Error('Failed to load user ' + req.userid));
-  }
- });
-}
-function randomString(length) {
-    var chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz'.split('');
-    
-    if (! length) {
-        length = Math.floor(Math.random() * chars.length);
-    }
-    
-    var str = '';
-    for (var i = 0; i < length; i++) {
-        str += chars[Math.floor(Math.random() * chars.length)];
-    }
-    return str;
-}
+
 
 // MARKERS API
 
@@ -359,3 +310,55 @@ app.listen(port, function() {
   console.log("Listening on " + port);
 });
 
+
+function andRestrictToSelf(req, res, next) {
+  if (req.user) {
+   req.user.id == req.setup.user_id
+    ? next()
+    : next(new Error('Unauthorized'));
+  } else {
+    next(new Error('Not logged in'));
+  }
+}
+function loadSetup(req, res, next) {
+  console.log(req.params.id);
+ Setup.findById(req.params.id, function (err, setup) {
+  console.log(setup);
+  if (err) {
+    res.send('Failed to find setup' + req.params.id);
+  //  req.setup = setup;
+  } else {
+    console.log('found setup:' + setup._id);
+//    req.userid = setup.user_id;
+    next();
+//    next(new Error('Failed to load setup ' + req.params.id));
+  }
+  });
+}
+function loadUser(req, res, next) {
+ User.findById(req.userid, function (err, user) {
+  if (!err) {
+    req.user = user;
+    next();
+  } else {
+    next(new Error('Failed to load user ' + req.userid));
+  }
+ });
+}
+function randOrd(){
+  return (Math.round(Math.random())-0.5); 
+}
+
+function randomString(length) {
+    var chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz'.split('');
+    
+    if (! length) {
+        length = Math.floor(Math.random() * chars.length);
+    }
+    
+    var str = '';
+    for (var i = 0; i < length; i++) {
+        str += chars[Math.floor(Math.random() * chars.length)];
+    }
+    return str;
+}

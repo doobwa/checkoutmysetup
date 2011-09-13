@@ -87,12 +87,12 @@ $(function(){
 
     // The DOM events specific to an item.
     events: {
-      "click .check"             : "toggleDone",
+//      "click .check"             : "toggleDone",
       "click .editbtn"           : "edit",
       "click .savebtn"           : "update",
       "click .cancelbtn"         : "close",
       "click .deletebtn"         : "clear",
-      "keypress .setup-input"    : "updateOnEnter"
+//      "keypress .setup-input"    : "updateOnEnter"
     },
 
     // The SetupView listens for changes to its model, re-rendering.
@@ -211,7 +211,7 @@ $(function(){
     // Add all items in the **Setups** collection at once.
     addAll: function() {
       Setups.each(this.addOne);
-    }
+    },
 
     // // If you hit return in the main input field, and there is text to save,
     // // create new **Setup** model persisting it to *localStorage*.
