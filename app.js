@@ -150,9 +150,9 @@ app.delete('/setups/:id',loadSetup,andRestrictToSelf,function(req, res) {
    });
 });
 app.get('/setups/:id',loadSetup,loadUser,function(req, res) {
-  req.setup.directurl = 'setups/' + req.setup._id + '/';
-  req.user.directurl = 'users/' + req.user._id + '/';
-  if (!req.setup.shorturl) {
+//  req.setup.directurl = 'setups/' + req.setup._id + '/';
+//  req.user.directurl = 'users/' + req.user._id + '/';
+  if (req.setup.shorturl == null) {
     var d = 'glowing-beach-290.herokuapp.com';
     var b = 'http://api.bitly.com/v3/shorten?login=chrisdubois&apiKey=R_46c7bee365ae8711c76b255cd45551ed&longUrl=';
     var u = 'http%3A%2F%2F' + d + '%2Fsetups%2F' + req.setup._id;
@@ -213,13 +213,17 @@ function andRestrictToSelf(req, res, next) {
   }
 }
 function loadSetup(req, res, next) {
+  console.log(req.params.id);
  Setup.findById(req.params.id, function (err, setup) {
-  if (!err) {
-    req.setup = setup;
-    req.userid = setup.user_id;
-    next();
+  console.log(setup);
+  if (err) {
+    res.send('Failed to find setup' + req.params.id);
+  //  req.setup = setup;
   } else {
-    next(new Error('Failed to load setup ' + req.params.id));
+    console.log('found setup:' + setup._id);
+//    req.userid = setup.user_id;
+    next();
+//    next(new Error('Failed to load setup ' + req.params.id));
   }
   });
 }

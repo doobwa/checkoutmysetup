@@ -20,23 +20,26 @@ script#setup-template(type="text/template")
       a(href="#").btn.cancelbtn cancel
 
 - if (!everyauth.loggedIn)
-  .row
-    .span8.columns
-      h2 please login or register
-    .span6.columns.offset2
-      .well
-        a(href='/register') register
-        //
-         #fb-login.fb_button(style='background-position:left -188px')
-          a.fb_button_medium(href='/auth/facebook')
-            span#fb_login_text.fb_button_text
-              Connect with Facebook
+   p You are not logged in.
+   a(href='/login') login
+   p
+   a(href='/register') register
 - else
  #setupapp
    .row
       .span5.columns
         h3 profile info
-        p #{user.id} #{user.email}
+        b user id:
+        p #{user.id} 
+        b email:
+        p #{user.email} #{user.username}
+           .forms
+             form
+                // input.large(type='text', name="title", placeholder="title")
+                // input.large(type='text', name="url",placeholder="photo url")
+                textarea.large.clearfix(type='text', name="description",placeholder="description",rows=6)
+                input.btn.success(type='submit',value="save") 
+
       .span5.columns.offset1
         h3 my setups
         .well

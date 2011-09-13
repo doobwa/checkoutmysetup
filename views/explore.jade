@@ -16,7 +16,7 @@ link(type="text/css", rel="stylesheet",href="/stylesheets/royal-slider-5.0.css")
       ul#testId.royalSlidesContainer
         - each setup in setups
            li.royalSlide
-             a.setuplink(href= setup.directurl)
+             a.setuplink(href='/setups/'+setup._id)// setup.directurl)
                img(width=600,style="margin-left: 160px; margin-bottom: 0px;",src= setup.url)
              .royalCaption
                
