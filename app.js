@@ -115,6 +115,14 @@ app.get('/users/:id/setups',function(req, res) {
 });
 
 // SETUP API
+  app.param('setupid', function(req, res, next, setupid){
+    Setup.findOne({ _id : req.params.setupid }, function(err,setup) {
+      if (err) return next(err);
+      if (!setup) return next(new Error('Failed to load setup ' + setupid));
+      req.setup = setup;
+      next();
+    });
+  })
 app.get('/setups',function(req, res) {
   if (!req.loggedIn) {
     res.redirect('/login');
@@ -140,16 +148,16 @@ app.post('/setups',function(req, res) {
     res.redirect('/manage');
   }
 });
-app.delete('/setups/:id',loadSetup,andRestrictToSelf,function(req, res) {
-   Setup.remove({_id:req.params.id}, function (err) {
+app.delete('/setups/:setupid',andRestrictToSelf,function(req, res) {
+   Setup.remove({_id:req.params.setupid}, function (err) {
      if (!err) {
-       console.log('successfully removed setup'+req.params.id);
+       console.log('successfully removed setup'+req.params.setupid);
      } else {
-       console.log('failed to remove setup'+req.params.id);
+       console.log('failed to remove setup'+req.params.setupid);
      }
    });
 });
-app.get('/setups/:id',loadSetup,loadUser,function(req, res) {
+app.get('/setups/:setupid',loadUser,function(req, res) {
 //  req.setup.directurl = 'setups/' + req.setup._id + '/';
 //  req.user.directurl = 'users/' + req.user._id + '/';
   if (req.setup.shorturl == null) {
@@ -171,14 +179,13 @@ app.get('/setups/:id',loadSetup,loadUser,function(req, res) {
   }
   res.render('view',{setup:req.setup,user:req.user,title:'view setup'});
 });
-app.get('/setups/:id/edit',loadSetup,loadUser,andRestrictToSelf,function(req, res) {
-//  console.log(req.user);
+app.get('/setups/:setupid/edit',loadUser,andRestrictToSelf,function(req, res) {
   req.setup.directurl = 'setups/' + req.setup._id + '/';
   req.user.directurl = 'users/' + req.user._id + '/';
   res.render('edit',{setup:req.setup,user:req.user,title:'edit setup'});
 });
 
-app.put('/setups/:id',loadSetup,andRestrictToSelf,function(req, res) {
+app.put('/setups/:setupid',andRestrictToSelf,function(req, res) {
   req.setup.title = req.body.title;
   req.setup.url = req.body.url;
   req.setup.description = req.body.description;
@@ -188,31 +195,15 @@ app.put('/setups/:id',loadSetup,andRestrictToSelf,function(req, res) {
 });
 
 
-// // UTILITY FUNCTIONS
-// function getBitly(id) {
-//   var d = 'glowing-beach-290.herokuapp.com'
-//   var b = 'http://api.bitly.com/v3/shorten?login=chrisdubois&apiKey=R_46c7bee365ae8711c76b255cd45551ed&longUrl=';
-//   var u = 'http%3A%2F%2F' + d + '%2Fsetups%2F'+id;
-// //api.bitly.com/v3/shorten?login=chrisdubois&apiKey=R_46c7bee365ae8711c76b255cd45551ed&longUrl=http%3A%2F%2Fbetaworks.com%2F&format=json
-//   var a = rest.get(b + u).on('complete', function(data) {
-//     console.log(data.data.url);
-//     return(data.data.url);
-//   });
-//   return '5';
-// }
-
-
-// MARKERS API
-
-app.get('/setups/:id/markers',loadSetup,function(req, res) {
+app.get('/setups/:setupid/markers',function(req, res) {
   res.send(req.setup.markers);
 });
-app.post('/setups/:id/markers',loadSetup,andRestrictToSelf,function(req, res) {
+app.post('/setups/:setupid/markers',andRestrictToSelf,function(req, res) {
   req.setup.markers.push({text:req.body.text,x:req.body.x,y:req.body.y});
   req.setup.save();
   res.send(req.setup.markers);
 });
-app.delete('/setups/:id/markers/:marker',loadSetup,andRestrictToSelf,function(req, res) {
+app.delete('/setups/:setupid/markers/:marker',andRestrictToSelf,function(req, res) {
   req.setup.markers.id(req.params.marker).remove();
   req.setup.save(function (err) {
     if (!err) console.log('removal successful');
@@ -221,7 +212,7 @@ app.delete('/setups/:id/markers/:marker',loadSetup,andRestrictToSelf,function(re
 });
 
 //UNIMPLEMENTED  (AND UNUSED)
-app.put('/setups/:setup/markers',function(req, res) {
+app.put('/setups/:setupid/markers',function(req, res) {
  console.log('putting to markers');
 });
 
@@ -362,3 +353,15 @@ function randomString(length) {
     }
     return str;
 }
+// // UTILITY FUNCTIONS
+// function getBitly(id) {
+//   var d = 'glowing-beach-290.herokuapp.com'
+//   var b = 'http://api.bitly.com/v3/shorten?login=chrisdubois&apiKey=R_46c7bee365ae8711c76b255cd45551ed&longUrl=';
+//   var u = 'http%3A%2F%2F' + d + '%2Fsetups%2F'+id;
+// //api.bitly.com/v3/shorten?login=chrisdubois&apiKey=R_46c7bee365ae8711c76b255cd45551ed&longUrl=http%3A%2F%2Fbetaworks.com%2F&format=json
+//   var a = rest.get(b + u).on('complete', function(data) {
+//     console.log(data.data.url);
+//     return(data.data.url);
+//   });
+//   return '5';
+// }
