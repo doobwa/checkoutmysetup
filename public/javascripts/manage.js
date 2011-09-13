@@ -90,7 +90,7 @@ $(function(){
       "click .check"             : "toggleDone",
       "click .editbtn"           : "edit",
       "click .savebtn"           : "update",
-      "click .cancelbtn"           : "close",
+      "click .cancelbtn"         : "close",
       "click .deletebtn"         : "clear",
       "keypress .setup-input"    : "updateOnEnter"
     },
@@ -98,7 +98,8 @@ $(function(){
     // The SetupView listens for changes to its model, re-rendering.
     initialize: function() {
       this.model.bind('change', this.render, this);
-      this.model.bind('destroy', this.remove, this);
+      this.model.bind('destroy', this.remove, this); // This wasn't
+      // working, so added something to the clear() function
     },
 
     // Re-render the contents of the setup item.
@@ -116,11 +117,6 @@ $(function(){
       var text = this.model.get('title');
       this.input = this.$('.setup-input');
       this.input.bind('blur', _.bind(this.close, this)).val(text);
-    },
-
-    // Toggle the `"done"` state of the model.
-    toggleDone: function() {
-      this.model.toggle();
     },
 
     // Switch this view into `"editing"` mode, displaying the input fields.
@@ -145,9 +141,9 @@ $(function(){
       this.model.save({title: title,url:url,description:description});
       this.close();
     },
-    updateOnEnter: function(e) {
-      if (e.keyCode == 13) this.close();
-    },
+    // updateOnEnter: function(e) {
+    //   if (e.keyCode == 13) this.close();
+    // },
 
     // Remove this view from the DOM.
     remove: function() {
@@ -157,6 +153,7 @@ $(function(){
     // Remove the item, destroy the model.
     clear: function() {
       this.model.destroy();
+      $(this.el).remove();
     }
 
   });
@@ -178,7 +175,7 @@ $(function(){
     events: {
       // "keypress #new-setup":  "createOnEnter",
       // "keyup #new-setup":     "showTooltip",
-      "click .setup-clear a": "clearCompleted"
+      //"click .deletebtn a": "clearCompleted"
     },
 
     // At initialization we bind to the relevant events on the `Setups`
@@ -214,34 +211,34 @@ $(function(){
     // Add all items in the **Setups** collection at once.
     addAll: function() {
       Setups.each(this.addOne);
-    },
-
-    // If you hit return in the main input field, and there is text to save,
-    // create new **Setup** model persisting it to *localStorage*.
-    createOnEnter: function(e) {
-      var text = this.input.val();
-      if (!text || e.keyCode != 13) return;
-      Setups.create({text: text});
-      this.input.val('');
-    },
-
-    // Clear all done setup items, destroying their models.
-    clearCompleted: function() {
-      _.each(Setups.done(), function(setup){ setup.destroy(); });
-      return false;
-    },
-
-    // Lazily show the tooltip that tells you to press `enter` to save
-    // a new setup item, after one second.
-    showTooltip: function(e) {
-      var tooltip = this.$(".ui-tooltip-top");
-      var val = this.input.val();
-      tooltip.fadeOut();
-      if (this.tooltipTimeout) clearTimeout(this.tooltipTimeout);
-      if (val == '' || val == this.input.attr('placeholder')) return;
-      var show = function(){ tooltip.show().fadeIn(); };
-      this.tooltipTimeout = _.delay(show, 1000);
     }
+
+    // // If you hit return in the main input field, and there is text to save,
+    // // create new **Setup** model persisting it to *localStorage*.
+    // createOnEnter: function(e) {
+    //   var text = this.input.val();
+    //   if (!text || e.keyCode != 13) return;
+    //   Setups.create({text: text});
+    //   this.input.val('');
+    // },
+
+    // // Clear all done setup items, destroying their models.
+    // clearCompleted: function() {
+    //   _.each(Setups.done(), function(setup){ setup.destroy(); });
+    //   return false;
+    // },
+
+    // // Lazily show the tooltip that tells you to press `enter` to save
+    // // a new setup item, after one second.
+    // showTooltip: function(e) {
+    //   var tooltip = this.$(".ui-tooltip-top");
+    //   var val = this.input.val();
+    //   tooltip.fadeOut();
+    //   if (this.tooltipTimeout) clearTimeout(this.tooltipTimeout);
+    //   if (val == '' || val == this.input.attr('placeholder')) return;
+    //   var show = function(){ tooltip.show().fadeIn(); };
+    //   this.tooltipTimeout = _.delay(show, 1000);
+    // }
 
   });
 

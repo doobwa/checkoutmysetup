@@ -89,9 +89,21 @@ $(function(){
   window.App = new SubsetupView;
 
 });
+// (function(d){
+//         var js, id = 'facebook-jssdk'; if (d.getElementById(id)) {return;}
+//         js = d.createElement('script'); js.id = id; js.async = true;
+//         js.src = "//connect.facebook.net/en_US/all.js#appId=154879431267113&xfbml=1";
+//         d.getElementsByTagName('head')[0].appendChild(js);
+//       }(document));
+// (function(d){
+//   var js, id = 'facebook-jssdk'; if (d.getElementById(id)) {return;}
+//   js = d.createElement('script'); js.id = id; js.async = true;
+//   js.src = "//connect.facebook.net/en_US/all.js#appId=217463481641455&xfbml=1";
+//   d.getElementsByTagName('head')[0].appendChild(js);
+// }(document));
 (function(d){
-        var js, id = 'facebook-jssdk'; if (d.getElementById(id)) {return;}
-        js = d.createElement('script'); js.id = id; js.async = true;
-        js.src = "//connect.facebook.net/en_US/all.js#appId=154879431267113&xfbml=1";
-        d.getElementsByTagName('head')[0].appendChild(js);
-      }(document));
+  var js, id = 'facebook-jssdk'; if (d.getElementById(id)) {return;}
+  js = d.createElement('script'); js.id = id; js.async = true;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=280934058583469&xfbml=1";
+  d.getElementsByTagName('head')[0].appendChild(js);
+}(document));

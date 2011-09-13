@@ -1,5 +1,6 @@
 var express = require('express');
-
+var http = require('http');
+var rest = require('restler');
 var conf = require('./conf');
 
 var everyauth = require('everyauth')
@@ -151,6 +152,23 @@ app.delete('/setups/:id',loadSetup,andRestrictToSelf,function(req, res) {
 app.get('/setups/:id',loadSetup,loadUser,function(req, res) {
   req.setup.directurl = 'setups/' + req.setup._id + '/';
   req.user.directurl = 'users/' + req.user._id + '/';
+  if (!req.setup.shorturl) {
+    var d = 'glowing-beach-290.herokuapp.com';
+    var b = 'http://api.bitly.com/v3/shorten?login=chrisdubois&apiKey=R_46c7bee365ae8711c76b255cd45551ed&longUrl=';
+    var u = 'http%3A%2F%2F' + d + '%2Fsetups%2F' + req.setup._id;
+    //api.bitly.com/v3/shorten?login=chrisdubois&apiKey=R_46c7bee365ae8711c76b255cd45551ed&longUrl=http%3A%2F%2Fbetaworks.com%2F&format=json
+    rest.get(b + u).on('complete', function(data) {
+      console.log('getting short url:' + data.data.url);
+      req.setup.shorturl = data.data.url;
+      req.setup.save(function(err) {
+        if (err) {          
+          console.log('problem saving shorturl');
+        } else {
+          console.log('saved shorturl');
+        }
+      });
+    });
+  }
   res.render('view',{setup:req.setup,user:req.user,title:'view setup'});
 });
 app.get('/setups/:id/edit',loadSetup,loadUser,andRestrictToSelf,function(req, res) {
@@ -159,20 +177,29 @@ app.get('/setups/:id/edit',loadSetup,loadUser,andRestrictToSelf,function(req, re
   req.user.directurl = 'users/' + req.user._id + '/';
   res.render('edit',{setup:req.setup,user:req.user,title:'edit setup'});
 });
+
 app.put('/setups/:id',loadSetup,andRestrictToSelf,function(req, res) {
   req.setup.title = req.body.title;
   req.setup.url = req.body.url;
   req.setup.description = req.body.description;
-  // Make a short url via bit.ly
-  req.setup.shorturl = 'http://api.bitly.com/v3/shorten?login=chrisdubois&apiKey=R_46c7bee365ae8711c76b255cd45551ed&longUrl=http%3A%2F%2Fbetaworks.com%2F&format=json';
   req.setup.save(function (err) {
     if (!err) console.log('Setup updated to:'+req.setup.title);
   });
-//  res.redirect('/manage');
 });
 
 
-// UTILITY FUNCTIONS
+// // UTILITY FUNCTIONS
+// function getBitly(id) {
+//   var d = 'glowing-beach-290.herokuapp.com'
+//   var b = 'http://api.bitly.com/v3/shorten?login=chrisdubois&apiKey=R_46c7bee365ae8711c76b255cd45551ed&longUrl=';
+//   var u = 'http%3A%2F%2F' + d + '%2Fsetups%2F'+id;
+// //api.bitly.com/v3/shorten?login=chrisdubois&apiKey=R_46c7bee365ae8711c76b255cd45551ed&longUrl=http%3A%2F%2Fbetaworks.com%2F&format=json
+//   var a = rest.get(b + u).on('complete', function(data) {
+//     console.log(data.data.url);
+//     return(data.data.url);
+//   });
+//   return '5';
+// }
 function randOrd(){
   return (Math.round(Math.random())-0.5); 
 }
@@ -327,3 +354,4 @@ var port = process.env.PORT || 3000;
 app.listen(port, function() {
   console.log("Listening on " + port);
 });
+
