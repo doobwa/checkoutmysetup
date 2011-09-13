@@ -2,40 +2,21 @@ var express = require('express');
 var http = require('http');
 var rest = require('restler');
 var conf = require('./conf');
-
-var everyauth = require('everyauth')
-  , Promise = everyauth.Promise;
-
-everyauth.debug = true;
-
-var mongoose = require('mongoose')
-  , Schema = mongoose.Schema
-  , ObjectId = mongoose.SchemaTypes.ObjectId;
-
-var MarkerSchema = new Schema({
-    description     : String
-  , x      : String
-  , y      : String
-});
-
-var RequestSchema = new Schema({
-  email : String,
-  coupon : String
-});
-
-var SetupSchema = new Schema({
-  title: String,
-  url: String,
-  description: String,
-  user_id : String,
-  markers  : [MarkerSchema]
-});
+var mongooseAuth = require('mongoose-auth');
+var mongoose = require('mongoose');
+var everyauth = require('everyauth');
+everyauth.debug = false;
+var fs = require('fs');
+var Promise = everyauth.Promise;
+var environment = process.env.NODE_ENV || 'development'
+var mongo_uri = JSON.parse( fs.readFileSync(process.cwd()+'/config.json', encoding='utf8') )[environment].mongo_uri;
+mongoose.connect(mongo_uri);
+Schema = mongoose.Schema
+ObjectId = mongoose.SchemaTypes.ObjectId;
 
 var UserSchema = new Schema({
-  setups : [SetupSchema]
+//  setups : [SetupSchema]
 }) , User;
-
-var mongooseAuth = require('mongoose-auth');
 
 UserSchema.plugin(mongooseAuth, {
     everymodule: {
@@ -66,7 +47,7 @@ UserSchema.plugin(mongooseAuth, {
           , loginView: 'login.jade'
           , getRegisterPath: '/register'
           , postRegisterPath: '/register'
-          , registerView: 'about.jade' // register.jade
+          , registerView: 'about.jade' // should be register.jade
           , loginSuccessRedirect: '/manage'
           , registerSuccessRedirect: '/manage'
         }
@@ -74,19 +55,7 @@ UserSchema.plugin(mongooseAuth, {
 });
 // Adds login: String
 
-mongoose.model('User', UserSchema);
-mongoose.model('Setup', SetupSchema);
-mongoose.model('Marker', MarkerSchema);
-mongoose.model('Request', RequestSchema);
-
-//mongoose.connect('mongodb://localhost/mysetup-dev');
-mongoose.connect('mongodb://chris:dingleberry@staff.mongohq.com:10076/app941158');
-//mongoose.connect('mongodb://chris:dingleberry@staff.mongohq.com:10085/setups');
-
-User = mongoose.model('User');
-Setup = mongoose.model('Setup');
-Marker = mongoose.model('Marker');
-Request = mongoose.model('Request');
+User = mongoose.model('User', UserSchema);
 
 var app = express.createServer(
     express.bodyParser()
@@ -103,120 +72,18 @@ app.configure( function () {
   app.use(express.bodyParser());
   app.use(express.methodOverride());
   app.use(require('stylus').middleware({ src: __dirname + '/public' }));
-  app.use(app.router);
+  app.use(express.logger(':method :url :status'));
   app.use(express.static(__dirname + '/public'));
+  app.use(app.router);
 });
 
 
-app.get('/users/:id/setups',function(req, res) {
-  Setup.find({user_id:req.params.id}, function (err, setups) {
-    res.send(setups);
-  });
-});
-
-// SETUP API
-  app.param('setupid', function(req, res, next, setupid){
-    Setup.findOne({ _id : req.params.setupid }, function(err,setup) {
-      if (err) return next(err);
-      if (!setup) return next(new Error('Failed to load setup ' + setupid));
-      req.setup = setup;
-      next();
-    });
-  })
-app.get('/setups',function(req, res) {
-  if (!req.loggedIn) {
-    res.redirect('/login');
-  } else {
-    Setup.find({user_id:req.user.id},function(err,docs) {
-      res.send(docs);
-    });
-  }
-});
-app.post('/setups',function(req, res) {
-  if (!req.loggedIn) {
-    res.redirect('/login');
-  } else {
-    var s = new Setup({
-      title:req.body.title,
-      url: req.body.url,
-      description: req.body.description,
-      user_id: req.user._id
-    });
-    s.save(function (err) {
-      if (!err) console.log('Success!');
-    });
-    res.redirect('/manage');
-  }
-});
-app.delete('/setups/:setupid',andRestrictToSelf,function(req, res) {
-   Setup.remove({_id:req.params.setupid}, function (err) {
-     if (!err) {
-       console.log('successfully removed setup'+req.params.setupid);
-     } else {
-       console.log('failed to remove setup'+req.params.setupid);
-     }
-   });
-});
-app.get('/setups/:setupid',loadUser,function(req, res) {
-//  req.setup.directurl = 'setups/' + req.setup._id + '/';
-//  req.user.directurl = 'users/' + req.user._id + '/';
-  if (req.setup.shorturl == null) {
-    var d = 'glowing-beach-290.herokuapp.com';
-    var b = 'http://api.bitly.com/v3/shorten?login=chrisdubois&apiKey=R_46c7bee365ae8711c76b255cd45551ed&longUrl=';
-    var u = 'http%3A%2F%2F' + d + '%2Fsetups%2F' + req.setup._id;
-    //api.bitly.com/v3/shorten?login=chrisdubois&apiKey=R_46c7bee365ae8711c76b255cd45551ed&longUrl=http%3A%2F%2Fbetaworks.com%2F&format=json
-    rest.get(b + u).on('complete', function(data) {
-      console.log('getting short url:' + data.data.url);
-      req.setup.shorturl = data.data.url;
-      req.setup.save(function(err) {
-        if (err) {          
-          console.log('problem saving shorturl');
-        } else {
-          console.log('saved shorturl');
-        }
-      });
-    });
-  }
-  res.render('view',{setup:req.setup,user:req.user,title:'view setup'});
-});
-app.get('/setups/:setupid/edit',loadUser,andRestrictToSelf,function(req, res) {
-  req.setup.directurl = 'setups/' + req.setup._id + '/';
-  req.user.directurl = 'users/' + req.user._id + '/';
-  res.render('edit',{setup:req.setup,user:req.user,title:'edit setup'});
-});
-
-app.put('/setups/:setupid',andRestrictToSelf,function(req, res) {
-  req.setup.title = req.body.title;
-  req.setup.url = req.body.url;
-  req.setup.description = req.body.description;
-  req.setup.save(function (err) {
-    if (!err) console.log('Setup updated to:'+req.setup.title);
-  });
-});
-
-
-app.get('/setups/:setupid/markers',function(req, res) {
-  res.send(req.setup.markers);
-});
-app.post('/setups/:setupid/markers',andRestrictToSelf,function(req, res) {
-  req.setup.markers.push({text:req.body.text,x:req.body.x,y:req.body.y});
-  req.setup.save();
-  res.send(req.setup.markers);
-});
-app.delete('/setups/:setupid/markers/:marker',andRestrictToSelf,function(req, res) {
-  req.setup.markers.id(req.params.marker).remove();
-  req.setup.save(function (err) {
-    if (!err) console.log('removal successful');
-    else console.log('remove failed');
-  });
-});
-
-//UNIMPLEMENTED  (AND UNUSED)
-app.put('/setups/:setupid/markers',function(req, res) {
- console.log('putting to markers');
-});
-
-// ROUTES
+// // ROUTES
+//   app.get('/users/:id/setups',function(req, res) {
+//     Setup.find({user_id:req.params.id}, function (err, setups) {
+//       res.send(setups);
+//     });
+//   });
 app.get('/', function (req, res) {
   if (!req.user) {
     res.redirect('login');
@@ -256,43 +123,46 @@ app.get('/register/:email/coupon/:id', function (req, res) {
 app.get('/manage', function (req, res) {
   res.render('manage', {title:'login'});
 });
-app.get('/explore',function(req, res) {
-  var query = Setup.find({});
-  query.limit(5);
-  query.skip(5);
-  query.exec(function(err,setups) {
-    setups = setups.map(function(setup) {
-      setup.directurl = 'setups/' + setup._id + '/';
-      return(setup)
-    });
-    res.render('explore',{setups:setups.sort(randOrd),title:'explore'});
-  });
-});
-app.get('/mine',function(req, res) {
-  if (!req.user) {
-    res.send('Not logged in');
-  } else {
-  Setup.find({user_id:req.user.id},function(err,setups) {
-    setups = setups.map(function(setup) {
-      setup.directurl = '/setups/' + setup._id + '/';
-      return(setup)
-    });
-    res.render('mine',{setups:setups,title:'explore'});
-  });
+// app.get('/explore',function(req, res) {
+//   var query = Setup.find({});
+//   query.limit(5);
+//   query.skip(5);
+//   query.exec(function(err,setups) {
+//     setups = setups.map(function(setup) {
+//       setup.directurl = 'setups/' + setup._id + '/';
+//       return(setup)
+//     });
+//     res.render('explore',{setups:setups.sort(randOrd),title:'explore'});
+//   });
+// });
+// app.get('/mine',function(req, res) {
+//   if (!req.user) {
+//     res.send('Not logged in');
+//   } else {
+//   Setup.find({user_id:req.user.id},function(err,setups) {
+//     setups = setups.map(function(setup) {
+//       setup.directurl = '/setups/' + setup._id + '/';
+//       return(setup)
+//     });
+//     res.render('mine',{setups:setups,title:'explore'});
+//   });
 
-  }
-});
-app.get('/login', function (req, res) {
-    req.logout();
-    res.redirect('/');
-});
-app.get('/logout', function (req, res) {
-    req.logout();
-    res.redirect('/');
-});
-app.get('/about', function (req, res) {
-    res.render('about',{title:'about'});
-});
+//   }
+// });
+// app.get('/login', function (req, res) {
+//     req.logout();
+//     res.redirect('/');
+// });
+// app.get('/logout', function (req, res) {
+//     req.logout();
+//     res.redirect('/');
+// });
+// app.get('/about', function (req, res) {
+//     res.render('about',{title:'about'});
+// });
+require('./routes/setups')(app)
+//require('./routes/users')(app)
+
 
 mongooseAuth.helpExpress(app);
 

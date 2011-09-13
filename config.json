@@ -1,0 +1,11 @@
+{
+  "development" : {
+    "mongo_uri": "mongodb://chris:dingleberry@staff.mongohq.com:10076/app941158"
+  },
+  "staging" : {
+    "mongo_uri": "mongodb://chris:dingleberry@staff.mongohq.com:10076/app941158"
+  },
+  "production" : {
+    "mongo_uri": "mongodb://chris:dingleberry@staff.mongohq.com:10076/app941158"
+  }
+}
