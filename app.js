@@ -109,6 +109,11 @@ app.configure( function () {
 });
 
 
+app.get('/users/:id',loadUser,function(req, res) {
+  User.find({_id:req.params.id}, function (err, user) {
+    res.send(user);
+  });
+});
 app.get('/users/:id/setups',function(req, res) {
   Setup.find({user_id:req.params.id}, function (err, setups) {
     res.send(setups);

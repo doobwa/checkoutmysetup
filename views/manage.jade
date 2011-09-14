@@ -3,20 +3,33 @@ link(type="text/css", rel="stylesheet",href="/stylesheets/manage.css")
 script(type="text/javascript", src="/javascripts/manage.js")
 
 
+script#profile-template(type="text/template")
+  .display
+    .profile-text(style="float:left;")
+    .controls(style="font-size:small;float:right;")
+      a.editbtn(href="#") edit
+  .edit
+   .forms
+     form
+      textarea.large.clearfix.input-description(type='text', name="description",placeholder="describe yourself",rows=6)
+      a(href="#").btn.primary.savebtn(style="margin:2px;") save
+      a(href="#").btn.cancelbtn cancel
+
+
 script#setup-template(type="text/template")
-  div.display
-    div.setup-text(style="float:left;")
+  .display
+    .setup-text(style="float:left;")
     .controls(style="font-size:small;float:right;")
       a.editbtn(href="#") edit
       &nbsp;
       a.deletebtn(href="#") delete
-  div.edit
+  .edit
    .forms
      form
       input.large.input-title(type='text', name="title")
       input.large.input-url(type='text', name="url",placeholder="photo url")
       textarea.large.clearfix.input-description(type='text', name="description",placeholder="description",rows=6)
-      a(href="#").btn.primary.savebtn(style="margin:2px;") save setup
+      a(href="#").btn.primary.savebtn(style="margin:2px;") save
       a(href="#").btn.cancelbtn cancel
 
 - if (!everyauth.loggedIn)
@@ -32,13 +45,15 @@ script#setup-template(type="text/template")
             span#fb_login_text.fb_button_text
               Connect with Facebook
 - else
- #setupapp
+ #manageapp
    .row
       .span5.columns
-        h3 profile info
-        p #{user.id} #{user.email}
+        h3 Profile
+        #profile
+            p #{user.id} #{user.email}
+            p.profile-text unchanged
       .span5.columns.offset1
-        h3 my setups
+        h3 Setups
         .well
           #setups
               ul#setup-list(style="margin:0px;list-style:none;")

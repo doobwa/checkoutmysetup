@@ -6,6 +6,56 @@
 // Load the application once the DOM is ready, using `jQuery.ready`:
 $(function(){
 
+  window.Profile = Backbone.Model.extend({
+    initialize: function(attributes) { 
+      this.id = attributes['_id']; 
+    },
+    defaults: function() {
+      return {
+        body: 'hello'
+      };
+    },
+    // url: function() {
+    //   return 'users';
+    // },
+  });
+  window.ProfileView = Backbone.View.extend({
+
+    el: $("#profile"),
+    template: _.template($('#profile-template').html()),
+
+    // The DOM events specific to an item.
+    events: {
+      "click .editbtn"           : "edit",
+      "click .savebtn"           : "update",
+      "click .cancelbtn"         : "close",
+//      "click .deletebtn"         : "clear",
+//      "keypress .setup-input"    : "updateOnEnter"
+    },
+    initialize: function() {
+      this.model.bind('change', this.render, this);
+      this.model.bind('destroy', this.remove, this);
+    },
+    render: function() {
+      $(this.el).html(this.template(this.model.toJSON()));
+      this.$('.profile-text').html(this.model.get('body'));
+      return this;
+    },
+    edit: function() {
+      $(this.el).addClass("editing");
+      //this.$('.input-description')[0].focus();
+    },
+    close: function() {
+      $(this.el).removeClass("editing");
+    },
+    update: function(e) {
+      var body = this.$('.input-description')[0].value;
+//      this.model.save({body:body});
+      this.close();
+    }
+  });
+
+
   // Setup Model
   // ----------
 
@@ -163,29 +213,27 @@ $(function(){
 
   // The Application
   // ---------------
-
+  window.Profile = new Profile;
   // Our overall **AppView** is the top-level piece of UI.
-  window.SetupAppView = Backbone.View.extend({
+  window.ManageAppView = Backbone.View.extend({
 
     // Instead of generating a new element, bind to the existing skeleton of
     // the App already present in the HTML.
-    el: $("#setupapp"),
-
-    // Our template for the line of statistics at the bottom of the app.
-//    statsTemplate: _.template($('#stats-template').html()),
+    el: $("#manageapp"),
 
     // Delegated events for creating new items, and clearing completed ones.
     events: {
-      // "keypress #new-setup":  "createOnEnter",
-      // "keyup #new-setup":     "showTooltip",
-      "click .setup-clear a": "clearCompleted"
+
     },
 
     // At initialization we bind to the relevant events on the `Setups`
     // collection, when items are added or changed. Kick things off by
     // loading any preexisting setups that might be saved in *localStorage*.
     initialize: function() {
-//      this.input    = this.$("#new-setup");
+
+      var p = window.Profile;
+      var view = new ProfileView({model:p});
+      view.render();
 
       Setups.bind('add',   this.addOne, this);
       Setups.bind('reset', this.addAll, this);
@@ -197,11 +245,6 @@ $(function(){
     // Re-rendering the App just means refreshing the statistics -- the rest
     // of the app doesn't change.
     render: function() {
-      // this.$('#setup-stats').html(this.statsTemplate({
-      //   total:      Setups.length,
-      //   done:       Setups.done().length,
-      //   remaining:  Setups.remaining().length
-      // }));
     },
 
     // Add a single setup item to the list by creating a view for it, and
@@ -225,27 +268,9 @@ $(function(){
       this.input.val('');
     },
 
-    // Clear all done setup items, destroying their models.
-    clearCompleted: function() {
-      _.each(Setups.done(), function(setup){ setup.destroy(); });
-      return false;
-    },
-
-    // Lazily show the tooltip that tells you to press `enter` to save
-    // a new setup item, after one second.
-    showTooltip: function(e) {
-      var tooltip = this.$(".ui-tooltip-top");
-      var val = this.input.val();
-      tooltip.fadeOut();
-      if (this.tooltipTimeout) clearTimeout(this.tooltipTimeout);
-      if (val == '' || val == this.input.attr('placeholder')) return;
-      var show = function(){ tooltip.show().fadeIn(); };
-      this.tooltipTimeout = _.delay(show, 1000);
-    }
-
   });
 
   // Finally, we kick things off by creating the **App**.
-  window.SetupApp = new SetupAppView;
+  window.ManageApp = new ManageAppView;
 
 });

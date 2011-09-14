@@ -67,9 +67,14 @@
       padding: 0;
       border-bottom: 0;
     }
+  #profile.editing div.display,
+  #profile .edit,
   #setup-list .editing .display,
   #setup-list .edit {
     display: none;
+  }
+  #profile.editing .edit {
+      display: block;
   }
     #setup-list .editing .edit {
       display: block;
