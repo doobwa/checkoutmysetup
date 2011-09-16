@@ -2,7 +2,7 @@ script(type="text/javascript", src="/javascripts/view.js")
 #setupapp
  .row
 
-  div.span10.columns
+  div.span11.columns
    
    #markerapp
         #imgtag
@@ -20,11 +20,10 @@ script(type="text/javascript", src="/javascripts/view.js")
              div.edit
               input.marker-input(type="textbox",value="")
 
-  div.span5.columns.offset1
+  div.span5.columns
      h1#setuptitle= setup.title
-     p by 
-       a(href="/users/#{setup.user_id}/setups") chris 
-     p= setup.description
+     p by you
+     p#setupdescription= setup.description
      p 
      script(src="http://platform.twitter.com/widgets.js", type="text/javascript")
      <a href="http://twitter.com/share" class="twitter-share-button">Tweet</a>

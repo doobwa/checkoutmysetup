@@ -1,6 +1,7 @@
 $(function(){
-
   window.Marker = Backbone.Model.extend({
+
+    // Default attributes for a marker item.
     defaults: function() {
       return { };
     },
@@ -9,8 +10,6 @@ $(function(){
       this.id = attributes['_id']; 
     }
   });
-
-
   window.MarkerList = Backbone.Collection.extend({
     model: Marker,
     url : function() {
@@ -19,27 +18,24 @@ $(function(){
   });
 
   window.Markers = new MarkerList;
+
   window.MarkerView = Backbone.View.extend({
     tagName:  "div",
     template: _.template($('#item-template').html()),
+    events: {  },
     initialize: function() {
       this.model.bind('change', this.render, this);
-      this.model.bind('destroy', this.remove, this);
     },
     render: function() {
       $(this.el).html(this.template(this.model.toJSON()));
-      this.setText();
-      this.setLoc();
-      return this;
-    },
-    setText: function() {
       var text =  this.model.get('text');
       this.$('.highlight-text').text(text);
-    },
-    setLoc: function() {
-      this.$('.highlight').css({left:this.model.get('x'),top:this.model.get('y')});
+      this.$('.highlight').css({left:this.model.get('x'),
+                                top:this.model.get('y')});
+      return this;
     }
   });
+
 
   window.SubsetupView = Backbone.View.extend({
     el: $("#setupapp"),
@@ -61,6 +57,9 @@ $(function(){
       Markers.fetch();
     },
 
+    render: function() {
+
+    },
     addOneMarker: function(marker) {
       var view = new MarkerView({model: marker});
       this.$("#marker-list").append(view.render().el);
@@ -89,9 +88,11 @@ $(function(){
   window.App = new SubsetupView;
 
 });
-(function(d){
-        var js, id = 'facebook-jssdk'; if (d.getElementById(id)) {return;}
-        js = d.createElement('script'); js.id = id; js.async = true;
-        js.src = "//connect.facebook.net/en_US/all.js#appId=154879431267113&xfbml=1";
-        d.getElementsByTagName('head')[0].appendChild(js);
-      }(document));
+
+(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=151614408263382&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));
