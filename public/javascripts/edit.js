@@ -213,3 +213,73 @@ $(function(){
   window.App = new SubsetupView;
 
 });
+
+
+function split(val) {
+    return val.split(/@\s*/);
+}
+
+function extractLast(term) {
+    return split(term).pop();
+}
+
+function getTags(term, callback) {
+    $.ajax({
+        url: "http://api.stackoverflow.com/1.1/tags",
+        data: {
+            filter: term,
+            pagesize: 5
+        },
+        type: "POST",
+        success: callback,
+        jsonp: "jsonp",
+        dataType: "jsonp"
+    });    
+}
+
+$(document).ready(function() {
+
+$("#new-markers")
+    // don't navigate away from the field on tab when selecting an item
+    .bind("keydown", function(event) {
+        if (event.keyCode === $.ui.keyCode.TAB && $(this).data("autocomplete").menu.active) {
+
+            event.preventDefault();
+        }
+    }).autocomplete({
+        source: function(request, response) {
+            if (request.term.indexOf("@") >= 0) {
+                $("#loading").show();
+                getTags(extractLast(request.term), function(data) {
+                    response($.map(data.tags, function(el) {
+                        return {
+                            value: el.name,
+                            count: el.count
+                        }
+                    }));
+                    $("#loading").hide();                    
+                });
+            }
+        },
+        focus: function() {
+            // prevent value inserted on focus
+            return false;
+        },
+        select: function(event, ui) {
+            var terms = split(this.value);
+            // remove the current input
+            terms.pop();
+            // add the selected item
+            terms.push(ui.item.value);
+            // add placeholder to get the comma-and-space at the end
+            terms.push("");
+            this.value = terms.join("");
+            return false;
+        }
+    }).data("autocomplete")._renderItem = function(ul, item) {
+        return $("<li>")
+            .data("item.autocomplete", item)
+            .append("<a>" + item.label + "&nbsp;<span class='count'>(" + item.count + ")</span></a>")
+            .appendTo(ul);
+    };
+});

@@ -1,8 +1,7 @@
 link(type="text/css", rel="stylesheet",href="/stylesheets/extra.css") 
 .row
  .span4.columns
-   b &nbsp;
- .span4.columns
+   h3 Login to your account
    - if ('undefined' !== typeof errors && errors.length)
     ul#errors
      - each error in errors
@@ -13,5 +12,11 @@ link(type="text/css", rel="stylesheet",href="/stylesheets/extra.css")
        input.large(type='text',placeholder="email", name=everyauth.password.loginFormFieldName, value=email)
        input.large(type='password',placeholder="password", name=everyauth.password.passwordFormFieldName)
        input.btn.success(type='submit',value="Login")
- .span4.columns
-   // [sign in w/ FB coming soon]
+ .span6.columns.offset2
+    h3 Or via another service:
+    p
+        #fb-login.fb_button(style='float: left; background-position:left -188px')
+         a.fb_button_medium(href='/auth/facebook')
+          span#fb_login_text.fb_button_text
+             Connect with Facebook
+

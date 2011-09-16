@@ -265,7 +265,7 @@ app.put('/setups/:setup/markers',function(req, res) {
 // ROUTES
 app.get('/', function (req, res) {
   if (!req.user) {
-    res.redirect('login');
+    res.render('index',{title:'checkoutmysetup.com',layout:false});
   } else {
     res.redirect('mine');
   }  
@@ -285,13 +285,11 @@ app.post('/request',function(req,res) {
       });
     }
   });
-
 });
 app.get('/register/:email/coupon/:id', function (req, res) {
   Request.find({email:req.params.email},function(err,request) {
     if (request[0].coupon == req.params.id) {
       res.redirect('/register');
-      //, {title:'login',});
     } else {
       res.send('email/coupon code not correct');
     }
@@ -302,11 +300,11 @@ app.get('/manage', function (req, res) {
 });
 app.get('/explore',function(req, res) {
   var query = Setup.find({});
-  query.limit(5);
-  query.skip(5);
+//  query.limit(5);
+//  query.skip(5);
   query.exec(function(err,setups) {
     setups = setups.map(function(setup) {
-      setup.directurl = 'setups/' + setup._id + '/';
+//      setup.directurl = 'setups/' + setup._id + '/';
       return(setup)
     });
     res.render('explore',{setups:setups.sort(randOrd),title:'explore'});

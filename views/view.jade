@@ -3,7 +3,7 @@ script(type="text/javascript", src="/javascripts/view.js")
 #setupapp
  .row
 
-  div.span10.columns
+  div.span11.columns
    
    #markerapp
         #imgtag
@@ -21,14 +21,13 @@ script(type="text/javascript", src="/javascripts/view.js")
              div.edit
               input.marker-input(type="textbox",value="")
 
-  div.span5.columns.offset1
+  div.span5.columns
      h1#setuptitle= setup.title
-     //
-      p by 
-       a(href="/users/#{setup.user_id}/setups") blah
-     p= setup.description
+     p by you
+     p#setupdescription= setup.description
      p 
-     // <a href="http://twitter.com/share" class="twitter-share-button">Tweet</a>
+     script(src="http://platform.twitter.com/widgets.js", type="text/javascript")
+     <a href="http://twitter.com/share" class="twitter-share-button">Tweet</a>
      <div id="fb-root" style="margin-top:-5px;float:right;"></div>
      <div class="fb-like" data-href="http://glowing-beach-290.herokuapp.com" data-send="false" data-layout="button_count" data-width="100" data-show-faces="false" data-font="verdana"></div>
   
