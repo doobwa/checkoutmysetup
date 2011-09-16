@@ -25,6 +25,7 @@ var RequestSchema = new Schema({
 var SetupSchema = new Schema({
   title: String,
   url: String,
+  shorturl: String,
   description: String,
   user_id : String,
   markers  : [MarkerSchema]
@@ -96,6 +97,8 @@ var app = express.createServer(
   , express.session({ secret: 'notsurewhattoputhere'})
   , mongooseAuth.middleware()
 );
+var Bitly = require('node-bitly');
+
 
 app.configure( function () {
   app.set('views', __dirname + '/views');
@@ -154,6 +157,15 @@ app.post('/setups',function(req, res) {
     });
     s.save(function (err) {
       if (!err) console.log('Success!');
+    });
+    var Bitly = require(__dirname + '/lib/Bitly.js').Bitly;
+    var bitly = new Bitly('o_6jbulg1k1i', 'R_3767b0d251e41099f97bf79bdd3ba0d7');
+    bitly.shorten('http://checkoutmysetup.org/setups/'+s._id+'/', function(result) {
+      s.shorturl = result.data.url;
+      console.log(s.shorturl);
+      s.save(function (err) {
+        if (!err) console.log('Short url created.');
+      });
     });
     res.redirect('/manage');
   }
@@ -335,7 +347,13 @@ app.get('/logout', function (req, res) {
 app.get('/about', function (req, res) {
     res.render('about',{title:'about'});
 });
-
+app.get('/bitlytest',function(req,res) {
+  var Bitly = require(__dirname + '/lib/Bitly.js').Bitly;
+  var bitly = new Bitly('chrisdubois', 'R_46c7bee365ae8711c76b255cd45551ed');
+  bitly.shorten('http://checkoutmysetup.org', function(result) {
+    res.send(result.data.url);
+  });
+});
 mongooseAuth.helpExpress(app);
 
 var port = process.env.PORT || 3000;

@@ -1,0 +1,491 @@
+info it worked if it ends with ok
+verbose cli [ 'node',
+verbose cli   '/home/chris/local/node/bin/npm',
+verbose cli   'install',
+verbose cli   'node-bitly' ]
+info using npm@1.0.25
+info using node@v0.4.10
+verbose config file /home/chris/.npmrc
+verbose config file /home/chris/local/node/etc/npmrc
+silly testEngine { name: 'checkoutmysetup',
+silly testEngine   version: '0.0.3',
+silly testEngine   dependencies: 
+silly testEngine    { express: '2.4.3',
+silly testEngine      everyauth: '0.2.18',
+silly testEngine      mongoose: '1.8.1',
+silly testEngine      'mongoose-auth': '0.0.11',
+silly testEngine      jade: '0.14.1',
+silly testEngine      stylus: '0.14.0' },
+silly testEngine   _npmJsonOpts: 
+silly testEngine    { file: '/home/chris/Documents/mysetup/production/package.json',
+silly testEngine      wscript: false,
+silly testEngine      contributors: false,
+silly testEngine      serverjs: false },
+silly testEngine   _id: 'checkoutmysetup@0.0.3',
+silly testEngine   devDependencies: {},
+silly testEngine   engines: { node: '*' },
+silly testEngine   _engineSupported: true,
+silly testEngine   _npmVersion: '1.0.25',
+silly testEngine   _nodeVersion: 'v0.4.10',
+silly testEngine   _defaultsLoaded: true }
+verbose caching /home/chris/Documents/mysetup/production/package.json
+verbose loadDefaults checkoutmysetup@0.0.3
+silly testEngine { name: 'everyauth',
+silly testEngine   description: 'Auth solution (password, facebook, & more) for your node.js Connect & Express apps',
+silly testEngine   version: '0.2.18',
+silly testEngine   homepage: 'https://github.com/bnoguchi/everyauth/',
+silly testEngine   repository: 
+silly testEngine    { type: 'git',
+silly testEngine      url: 'git://github.com/bnoguchi/everyauth.git' },
+silly testEngine   author: 
+silly testEngine    { name: 'Brian Noguchi',
+silly testEngine      email: 'brian.noguchi@gmail.com',
+silly testEngine      url: 'https://github.com/bnoguchi/' },
+silly testEngine   keywords: 
+silly testEngine    [ 'auth',
+silly testEngine      'oauth',
+silly testEngine      'password',
+silly testEngine      'facebook',
+silly testEngine      'openid',
+silly testEngine      'twitter',
+silly testEngine      'authorization',
+silly testEngine      'authentication',
+silly testEngine      'connect',
+silly testEngine      'express' ],
+silly testEngine   main: './index.js',
+silly testEngine   directories: { lib: 'lib' },
+silly testEngine   dependencies: 
+silly testEngine    { oauth: '>=0.9.0',
+silly testEngine      restler: '>=0.2.1',
+silly testEngine      connect: '>=1.4.0',
+silly testEngine      openid: '=0.1.8',
+silly testEngine      xml2js: '>=0.1.7' },
+silly testEngine   devDependencies: 
+silly testEngine    { express: '>=2.3.10',
+silly testEngine      jade: '>=0.12.1',
+silly testEngine      tobi: '>=0.2.2',
+silly testEngine      expresso: '>=0.8.1',
+silly testEngine      should: '>=0.2.1' },
+silly testEngine   engines: { node: '>=0.4.0' },
+silly testEngine   _npmJsonOpts: 
+silly testEngine    { file: '/home/chris/Documents/mysetup/production/node_modules/everyauth/package.json',
+silly testEngine      wscript: false,
+silly testEngine      contributors: false,
+silly testEngine      serverjs: false },
+silly testEngine   _id: 'everyauth@0.2.18',
+silly testEngine   _engineSupported: true,
+silly testEngine   _npmVersion: '1.0.25',
+silly testEngine   _nodeVersion: 'v0.4.10',
+silly testEngine   _defaultsLoaded: true }
+verbose caching /home/chris/Documents/mysetup/production/node_modules/everyauth/package.json
+verbose loadDefaults everyauth@0.2.18
+silly testEngine { name: 'mongoose-auth',
+silly testEngine   description: 'User authentication plugin for mongoose node.js orm',
+silly testEngine   version: '0.0.11',
+silly testEngine   homepage: 'https://github.com/bnoguchi/mongoose-auth/',
+silly testEngine   repository: 
+silly testEngine    { type: 'git',
+silly testEngine      url: 'git://github.com/bnoguchi/mongoose-auth.git' },
+silly testEngine   author: 
+silly testEngine    { name: 'Brian Noguchi',
+silly testEngine      email: 'brian.noguchi@gmail.com',
+silly testEngine      url: 'https://github.com/bnoguchi/' },
+silly testEngine   main: './index.js',
+silly testEngine   directories: { lib: '.' },
+silly testEngine   dependencies: 
+silly testEngine    { bcrypt: '>=0.2.0',
+silly testEngine      mongoose: '>=1.4.0',
+silly testEngine      everyauth: '>=0.2.11',
+silly testEngine      'mongoose-types': '>=1.0.3' },
+silly testEngine   devDependencies: { express: '>=2.3.2', jade: '>=0.12.1' },
+silly testEngine   engines: { node: '>=0.4.0' },
+silly testEngine   _npmJsonOpts: 
+silly testEngine    { file: '/home/chris/Documents/mysetup/production/node_modules/mongoose-auth/package.json',
+silly testEngine      wscript: false,
+silly testEngine      contributors: false,
+silly testEngine      serverjs: false },
+silly testEngine   _id: 'mongoose-auth@0.0.11',
+silly testEngine   _engineSupported: true,
+silly testEngine   _npmVersion: '1.0.25',
+silly testEngine   _nodeVersion: 'v0.4.10',
+silly testEngine   _defaultsLoaded: true }
+verbose caching /home/chris/Documents/mysetup/production/node_modules/mongoose-auth/package.json
+verbose loadDefaults mongoose-auth@0.0.11
+silly testEngine { name: 'mongoose',
+silly testEngine   description: 'Mongoose MongoDB ORM',
+silly testEngine   version: '1.8.1',
+silly testEngine   author: 
+silly testEngine    { name: 'Guillermo Rauch',
+silly testEngine      email: 'guillermo@learnboost.com' },
+silly testEngine   keywords: 
+silly testEngine    [ 'mongodb',
+silly testEngine      'mongoose',
+silly testEngine      'orm',
+silly testEngine      'data',
+silly testEngine      'datastore',
+silly testEngine      'nosql' ],
+silly testEngine   dependencies: { hooks: '0.1.9', mongodb: '0.9.6-7', colors: '0.5.0' },
+silly testEngine   devDependencies: { should: '0.2.1' },
+silly testEngine   directories: { lib: './lib/mongoose' },
+silly testEngine   scripts: { test: 'make test' },
+silly testEngine   main: './index.js',
+silly testEngine   engines: { node: '>= 0.2.0' },
+silly testEngine   repository: 
+silly testEngine    { type: 'git',
+silly testEngine      url: 'git://github.com/LearnBoost/mongoose.git' },
+silly testEngine   _npmJsonOpts: 
+silly testEngine    { file: '/home/chris/Documents/mysetup/production/node_modules/mongoose/package.json',
+silly testEngine      wscript: false,
+silly testEngine      contributors: false,
+silly testEngine      serverjs: false },
+silly testEngine   _id: 'mongoose@1.8.1',
+silly testEngine   _engineSupported: true,
+silly testEngine   _npmVersion: '1.0.25',
+silly testEngine   _nodeVersion: 'v0.4.10',
+silly testEngine   _defaultsLoaded: true }
+verbose caching /home/chris/Documents/mysetup/production/node_modules/mongoose/package.json
+verbose loadDefaults mongoose@1.8.1
+silly testEngine { name: 'express',
+silly testEngine   description: 'Sinatra inspired web development framework',
+silly testEngine   version: '2.4.3',
+silly testEngine   author: 
+silly testEngine    { name: 'TJ Holowaychuk',
+silly testEngine      email: 'tj@vision-media.ca' },
+silly testEngine   contributors: 
+silly testEngine    [ { name: 'TJ Holowaychuk',
+silly testEngine        email: 'tj@vision-media.ca' },
+silly testEngine      { name: 'Aaron Heckmann',
+silly testEngine        email: 'aaron.heckmann+github@gmail.com' },
+silly testEngine      { name: 'Ciaran Jessup', email: 'ciaranj@gmail.com' },
+silly testEngine      { name: 'Guillermo Rauch', email: 'rauchg@gmail.com' } ],
+silly testEngine   dependencies: 
+silly testEngine    { connect: '>= 1.5.2 < 2.0.0',
+silly testEngine      mime: '>= 0.0.1',
+silly testEngine      qs: '>= 0.0.6' },
+silly testEngine   devDependencies: 
+silly testEngine    { 'connect-form': '0.2.1',
+silly testEngine      ejs: '0.4.2',
+silly testEngine      expresso: '0.7.2',
+silly testEngine      hamljs: '0.5.1',
+silly testEngine      jade: '0.11.0',
+silly testEngine      stylus: '0.13.0',
+silly testEngine      should: '0.2.1',
+silly testEngine      'express-messages': '0.0.2',
+silly testEngine      'node-markdown': '>= 0.0.1',
+silly testEngine      'connect-redis': '>= 0.0.1' },
+silly testEngine   keywords: [ 'framework', 'sinatra', 'web', 'rest', 'restful' ],
+silly testEngine   repository: 
+silly testEngine    { type: 'git',
+silly testEngine      url: 'git://github.com/visionmedia/express.git' },
+silly testEngine   main: 'index',
+silly testEngine   bin: { express: './bin/express' },
+silly testEngine   scripts: { test: 'make test', prepublish: 'npm prune' },
+silly testEngine   engines: { node: '>= 0.4.1 < 0.5.0' },
+silly testEngine   _npmJsonOpts: 
+silly testEngine    { file: '/home/chris/Documents/mysetup/production/node_modules/express/package.json',
+silly testEngine      wscript: false,
+silly testEngine      contributors: false,
+silly testEngine      serverjs: false },
+silly testEngine   _id: 'express@2.4.3',
+silly testEngine   _engineSupported: true,
+silly testEngine   _npmVersion: '1.0.25',
+silly testEngine   _nodeVersion: 'v0.4.10',
+silly testEngine   _defaultsLoaded: true }
+verbose caching /home/chris/Documents/mysetup/production/node_modules/express/package.json
+verbose loadDefaults express@2.4.3
+silly testEngine { name: 'stylus',
+silly testEngine   description: 'Robust, expressive, and feature-rich CSS superset',
+silly testEngine   version: '0.14.0',
+silly testEngine   author: 
+silly testEngine    { name: 'TJ Holowaychuk',
+silly testEngine      email: 'tj@vision-media.ca' },
+silly testEngine   keywords: 
+silly testEngine    [ 'css',
+silly testEngine      'parser',
+silly testEngine      'style',
+silly testEngine      'stylesheets',
+silly testEngine      'jade',
+silly testEngine      'language' ],
+silly testEngine   repository: 
+silly testEngine    { type: 'git',
+silly testEngine      url: 'git://github.com/learnboost/stylus.git' },
+silly testEngine   main: './index.js',
+silly testEngine   engines: { node: '>= 0.2.4' },
+silly testEngine   bin: { stylus: './bin/stylus' },
+silly testEngine   scripts: { prepublish: 'npm prune' },
+silly testEngine   dependencies: { cssom: '0.2.0', growl: '1.1.0' },
+silly testEngine   _npmJsonOpts: 
+silly testEngine    { file: '/home/chris/Documents/mysetup/production/node_modules/stylus/package.json',
+silly testEngine      wscript: false,
+silly testEngine      contributors: false,
+silly testEngine      serverjs: false },
+silly testEngine   _id: 'stylus@0.14.0',
+silly testEngine   devDependencies: {},
+silly testEngine   _engineSupported: true,
+silly testEngine   _npmVersion: '1.0.25',
+silly testEngine   _nodeVersion: 'v0.4.10',
+silly testEngine   _defaultsLoaded: true }
+verbose caching /home/chris/Documents/mysetup/production/node_modules/stylus/package.json
+verbose loadDefaults stylus@0.14.0
+silly testEngine { name: 'vows',
+silly testEngine   description: 'Asynchronous BDD & continuous integration for node.js',
+silly testEngine   url: 'http://vowsjs.org',
+silly testEngine   keywords: [ 'testing', 'spec', 'test', 'BDD' ],
+silly testEngine   author: 
+silly testEngine    { name: 'Alexis Sellier',
+silly testEngine      email: 'self@cloudhead.net' },
+silly testEngine   contributors: 
+silly testEngine    [ { name: 'Charlie Robbins',
+silly testEngine        email: 'charlie.robbins@gmail.com' } ],
+silly testEngine   dependencies: { eyes: '>=0.1.6' },
+silly testEngine   main: './lib/vows',
+silly testEngine   bin: { vows: './bin/vows' },
+silly testEngine   directories: { test: './test', bin: './bin' },
+silly testEngine   version: '0.5.11',
+silly testEngine   engines: { node: '>=0.2.6' },
+silly testEngine   _npmJsonOpts: 
+silly testEngine    { file: '/home/chris/Documents/mysetup/production/node_modules/vows/package.json',
+silly testEngine      wscript: false,
+silly testEngine      contributors: false,
+silly testEngine      serverjs: false },
+silly testEngine   _id: 'vows@0.5.11',
+silly testEngine   devDependencies: {},
+silly testEngine   _engineSupported: true,
+silly testEngine   _npmVersion: '1.0.25',
+silly testEngine   _nodeVersion: 'v0.4.10',
+silly testEngine   _defaultsLoaded: true }
+verbose caching /home/chris/Documents/mysetup/production/node_modules/vows/package.json
+verbose loadDefaults vows@0.5.11
+silly testEngine { name: 'prenup',
+silly testEngine   description: 'Syntactic sugar for Vows',
+silly testEngine   version: '0.0.0',
+silly testEngine   repository: 
+silly testEngine    { type: 'git',
+silly testEngine      url: 'git://github.com/jadell/prenup.git' },
+silly testEngine   author: 
+silly testEngine    { name: 'Josh Adell',
+silly testEngine      email: 'josh.adell@gmail.com',
+silly testEngine      url: 'http://joshadell.com' },
+silly testEngine   main: 'lib/index',
+silly testEngine   directories: { lib: 'lib' },
+silly testEngine   engines: { node: '*' },
+silly testEngine   _npmJsonOpts: 
+silly testEngine    { file: '/home/chris/Documents/mysetup/production/node_modules/prenup/package.json',
+silly testEngine      wscript: false,
+silly testEngine      contributors: false,
+silly testEngine      serverjs: false },
+silly testEngine   _id: 'prenup@0.0.0',
+silly testEngine   dependencies: {},
+silly testEngine   devDependencies: {},
+silly testEngine   _engineSupported: true,
+silly testEngine   _npmVersion: '1.0.25',
+silly testEngine   _nodeVersion: 'v0.4.10',
+silly testEngine   _defaultsLoaded: true }
+verbose caching /home/chris/Documents/mysetup/production/node_modules/prenup/package.json
+verbose loadDefaults prenup@0.0.0
+silly testEngine { name: 'jade',
+silly testEngine   description: 'Jade template engine',
+silly testEngine   version: '0.14.1',
+silly testEngine   author: 
+silly testEngine    { name: 'TJ Holowaychuk',
+silly testEngine      email: 'tj@vision-media.ca' },
+silly testEngine   repository: 
+silly testEngine    { type: 'git',
+silly testEngine      url: 'git://github.com/visionmedia/jade.git' },
+silly testEngine   main: './index.js',
+silly testEngine   bin: { jade: './bin/jade' },
+silly testEngine   devDependencies: 
+silly testEngine    { expresso: '0.6.4',
+silly testEngine      'coffee-script': '>= 0.0.1',
+silly testEngine      sass: '>= 0.0.1',
+silly testEngine      less: '>= 0.0.1',
+silly testEngine      markdown: '>= 0.0.1',
+silly testEngine      stylus: '>= 0.0.1' },
+silly testEngine   scripts: { prepublish: 'npm prune' },
+silly testEngine   engines: { node: '>= 0.1.98' },
+silly testEngine   _npmJsonOpts: 
+silly testEngine    { file: '/home/chris/Documents/mysetup/production/node_modules/jade/package.json',
+silly testEngine      wscript: false,
+silly testEngine      contributors: false,
+silly testEngine      serverjs: false },
+silly testEngine   _id: 'jade@0.14.1',
+silly testEngine   dependencies: {},
+silly testEngine   _engineSupported: true,
+silly testEngine   _npmVersion: '1.0.25',
+silly testEngine   _nodeVersion: 'v0.4.10',
+silly testEngine   _defaultsLoaded: true }
+verbose caching /home/chris/Documents/mysetup/production/node_modules/jade/package.json
+verbose loadDefaults jade@0.14.1
+silly testEngine { name: 'zombie',
+silly testEngine   version: '0.10.1',
+silly testEngine   description: 'Insanely fast, full-stack, headless browser testing using Node.js',
+silly testEngine   homepage: 'http://zombie.labnotes.org/',
+silly testEngine   author: 
+silly testEngine    { name: 'Assaf Arkin',
+silly testEngine      email: 'assaf@labnotes.org',
+silly testEngine      url: 'http://labnotes.org/' },
+silly testEngine   contributors: 
+silly testEngine    [ { name: 'Bob Lail',
+silly testEngine        email: 'bob.lailfamily@gmail.com',
+silly testEngine        url: 'http://boblail.tumblr.com/' },
+silly testEngine      { name: 'Damian Janowski' },
+silly testEngine      { name: 'José Valim',
+silly testEngine        email: 'jose.valim@plataformatec.com.br',
+silly testEngine        url: 'http://blog.plataformatec.com.br/' } ],
+silly testEngine   keywords: 
+silly testEngine    [ 'test',
+silly testEngine      'tests',
+silly testEngine      'testing',
+silly testEngine      'TDD',
+silly testEngine      'spec',
+silly testEngine      'specs',
+silly testEngine      'BDD',
+silly testEngine      'headless',
+silly testEngine      'browser',
+silly testEngine      'html',
+silly testEngine      'html5',
+silly testEngine      'dom',
+silly testEngine      'css',
+silly testEngine      'javascript',
+silly testEngine      'integration',
+silly testEngine      'ajax',
+silly testEngine      'full-stack',
+silly testEngine      'DSL' ],
+silly testEngine   main: 'lib/zombie/index.js',
+silly testEngine   directories: { doc: './doc', lib: './lib', man: './man7' },
+silly testEngine   files: 
+silly testEngine    [ 'Cakefile',
+silly testEngine      'CHANGELOG.md',
+silly testEngine      'doc',
+silly testEngine      'lib',
+silly testEngine      'man7',
+silly testEngine      'MIT-LICENSE',
+silly testEngine      'README.md',
+silly testEngine      'spec',
+silly testEngine      'src',
+silly testEngine      'TODO.md',
+silly testEngine      'xpath' ],
+silly testEngine   scripts: { test: 'vows --spec' },
+silly testEngine   engines: { node: '>= 0.4.0' },
+silly testEngine   dependencies: 
+silly testEngine    { contextify: '~0.0.5',
+silly testEngine      jsdom: '~0.2.4',
+silly testEngine      mime: '~1.2.3',
+silly testEngine      'websocket-client': '~1.0.0' },
+silly testEngine   devDependencies: 
+silly testEngine    { 'coffee-script': '~1.1.2',
+silly testEngine      docco: '~0.3.0',
+silly testEngine      express: '~2.4.6',
+silly testEngine      ronn: '~0.3.6',
+silly testEngine      vows: '~0.5.11' },
+silly testEngine   repository: 
+silly testEngine    { type: 'git',
+silly testEngine      url: 'git://github.com/assaf/zombie.git' },
+silly testEngine   bugs: { url: 'http://github.com/assaf/zombie/issues' },
+silly testEngine   licenses: 
+silly testEngine    [ { type: 'MIT',
+silly testEngine        url: 'http://github.com/assaf/zombie/raw/master/MIT-LICENSE' } ],
+silly testEngine   _npmJsonOpts: 
+silly testEngine    { file: '/home/chris/Documents/mysetup/production/node_modules/zombie/package.json',
+silly testEngine      wscript: false,
+silly testEngine      contributors: false,
+silly testEngine      serverjs: false },
+silly testEngine   _id: 'zombie@0.10.1',
+silly testEngine   _engineSupported: true,
+silly testEngine   _npmVersion: '1.0.25',
+silly testEngine   _nodeVersion: 'v0.4.10',
+silly testEngine   _defaultsLoaded: true,
+silly testEngine   man: 
+silly testEngine    [ 'man7/changelog.7',
+silly testEngine      'man7/guts.7',
+silly testEngine      'man7/troubleshoot.7',
+silly testEngine      'man7/selectors.7',
+silly testEngine      'man7/api.7',
+silly testEngine      'man7/zombie.7',
+silly testEngine      'man7/todo.7' ] }
+verbose caching /home/chris/Documents/mysetup/production/node_modules/zombie/package.json
+verbose loadDefaults zombie@0.10.1
+silly testEngine { name: 'restler',
+silly testEngine   version: '0.2.1',
+silly testEngine   description: 'An HTTP client library for node.js',
+silly testEngine   contributors: [ { name: 'Dan Webb', email: 'dan@danwebb.net' } ],
+silly testEngine   homepage: 'https://github.com/danwrong/restler',
+silly testEngine   directories: { lib: './lib' },
+silly testEngine   main: './lib/restler',
+silly testEngine   engines: { node: '>= 0.3.7' },
+silly testEngine   _npmJsonOpts: 
+silly testEngine    { file: '/home/chris/Documents/mysetup/production/node_modules/restler/package.json',
+silly testEngine      wscript: false,
+silly testEngine      contributors: false,
+silly testEngine      serverjs: false },
+silly testEngine   _id: 'restler@0.2.1',
+silly testEngine   dependencies: {},
+silly testEngine   devDependencies: {},
+silly testEngine   _engineSupported: true,
+silly testEngine   _npmVersion: '1.0.25',
+silly testEngine   _nodeVersion: 'v0.4.10',
+silly testEngine   _defaultsLoaded: true }
+verbose caching /home/chris/Documents/mysetup/production/node_modules/restler/package.json
+verbose loadDefaults restler@0.2.1
+silly testEngine { author: 
+silly testEngine    { name: 'Justin Reidy',
+silly testEngine      email: 'jmreidy@rzrsharp.net',
+silly testEngine      url: 'http://rzrsharp.net' },
+silly testEngine   name: 'vows-bdd',
+silly testEngine   description: 'A BDD wrapper for Vows, allowing for easy writing of tests in a given-when-then format',
+silly testEngine   version: '0.1.0',
+silly testEngine   repository: 
+silly testEngine    { type: 'git',
+silly testEngine      url: 'git://github.com/jmreidy/vows-bdd.git' },
+silly testEngine   engines: { node: '0.4.x' },
+silly testEngine   main: './lib/index.js',
+silly testEngine   dependencies: { vows: '0.5.x', underscore: '1.1.x' },
+silly testEngine   devDependencies: { 'coffee-script': '1.1.x', sinon: '1.1.x' },
+silly testEngine   _npmJsonOpts: 
+silly testEngine    { file: '/home/chris/Documents/mysetup/production/node_modules/vows-bdd/package.json',
+silly testEngine      wscript: false,
+silly testEngine      contributors: false,
+silly testEngine      serverjs: false },
+silly testEngine   _id: 'vows-bdd@0.1.0',
+silly testEngine   _engineSupported: true,
+silly testEngine   _npmVersion: '1.0.25',
+silly testEngine   _nodeVersion: 'v0.4.10',
+silly testEngine   _defaultsLoaded: true }
+verbose caching /home/chris/Documents/mysetup/production/node_modules/vows-bdd/package.json
+verbose loadDefaults vows-bdd@0.1.0
+verbose from cache /home/chris/Documents/mysetup/production/package.json
+verbose into /home/chris/Documents/mysetup/production [ 'node-bitly' ]
+verbose cache add node-bitly
+verbose cache add [ 'node-bitly', null ]
+verbose parsed url { pathname: 'node-bitly', href: 'node-bitly' }
+info addNamed [ 'node-bitly', '' ]
+verbose addNamed [ null, '' ]
+verbose GET node-bitly
+verbose raw, before any munging node-bitly
+verbose url resolving [ 'https://registry.npmjs.org/', './node-bitly' ]
+verbose url resolved https://registry.npmjs.org/node-bitly
+verbose url parsed { protocol: 'https:',
+verbose url parsed   slashes: true,
+verbose url parsed   host: 'registry.npmjs.org',
+verbose url parsed   hostname: 'registry.npmjs.org',
+verbose url parsed   href: 'https://registry.npmjs.org/node-bitly',
+verbose url parsed   pathname: '/node-bitly' }
+verbose response https://registry.npmjs.org/node-bitly
+silly chunk {"error":"not_found","reason":"document not found"}
+silly chunk 
+silly get cb [ 404,
+silly get cb   { server: 'CouchDB/1.1.0 (Erlang OTP/R14B03)',
+silly get cb     date: 'Fri, 16 Sep 2011 21:41:52 GMT',
+silly get cb     'content-type': 'application/json',
+silly get cb     'content-length': '52',
+silly get cb     'cache-control': 'must-revalidate' } ]
+ERR! 404 'node-bitly' is not in the npm registry.
+ERR! 404 You should bug the author to publish it.
+ERR! 404 Note that you can also install from a tarball or folder.
+ERR! 
+ERR! System Linux 2.6.38-11-generic
+ERR! command "node" "/home/chris/local/node/bin/npm" "install" "node-bitly"
+ERR! cwd /home/chris/Documents/mysetup/production
+ERR! node -v v0.4.10
+ERR! npm -v 1.0.25
+verbose exit [ 1, true ]
