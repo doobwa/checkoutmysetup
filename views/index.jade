@@ -1,52 +1,53 @@
-
-
-h1 MySetup
-h2 Register
-- if (everyauth.loggedIn)
-  h2 Authenticated
-  #user-id Logged in with `user.id` #{user.id} - aka `everyauth.user.id` #{everyauth.user.id}
-  - if (everyauth.facebook)
-    h3 Facebook User Data
-    p= JSON.stringify(everyauth.facebook.user)
-- else
-  h2 Not Authenticated
-  #register
-    a(href='/register') Register
-  #password-login
-    a(href='/login', style='border: 0px') Login with Password
- //
-//  - if ('undefined' !== typeof errors && errors.length)
-//   ul#errors
-//     - each error in errors
-//       li.error= error
-//  form(action='/register', method='post')
-//   #login
-//     label(for=everyauth.password.loginFormFieldName) Login
-//     input(type='text', name=everyauth.password.loginFormFieldName, value=userParams[everyauth.password.loginFormFieldName])
-//   #password
-//     label(for=everyauth.password.passwordFormFieldName) Password
-//     input(type='password', name=everyauth.password.passwordFormFieldName)
-//   #submit
-//     input(type='submit') Register
-
-// h2 Login
-// - if ('undefined' !== typeof errors && errors.length)
-//   ul#errors
-//     - each error in errors
-//       li.error= error
-// form(action='/login', method='post')
-//   #login
-//     label(for=everyauth.password.loginFormFieldName) Login
-//     input(type='text', name=everyauth.password.loginFormFieldName, value=email)
-//   #password
-//     label(for=everyauth.password.passwordFormFieldName) Password
-//     input(type='password', name=everyauth.password.passwordFormFieldName)
-//   #submit
-//     input(type='submit') Login
-
-// h2 Login with Facebook
-// #fb-login.fb_button(style='background-position: left -188px')
-//     a.fb_button_medium(href='/auth/facebook')
-//       span#fb_login_text.fb_button_text
-//         Connect with Facebook
-
+!!! 5
+html
+  head
+    title checkout my setup
+    link(type="text/css", rel="stylesheet",href="http://twitter.github.com/bootstrap/assets/css/bootstrap-1.2.0.min.css")
+    link(type="text/css", rel="stylesheet",href="stylesheets/extra.css")
+  body
+    .topbar
+     .topbar-inner
+      .container
+        h3
+          a.logo(href="/") setups
+        ul.nav
+          li
+            a(href="/explore") browse
+          - if (everyauth.loggedIn)
+            li
+              a(href="/manage") manage 
+          li
+            a(href="/about") about
+        //
+         form(action="")
+          input(type="text",placeholder="Search")
+        ul.nav.secondary-nav
+          li
+             - if (!everyauth.loggedIn)
+              #password-login
+                a(href="/login") login
+             - else
+              a(href="/request") request
+   #masthead(style="text-align:center;")
+     .inner
+       .container
+          h1 Every activity has a setup.
+          h1 Share yours, checkout others.
+          input.large(type='text',placeholder="email", name="email")
+          a.btn.success Request an invite
+  .row(style="text-align:center;margin-top:20px;")
+      img(src="images/example.png",width=750)
+  #intro
+   .container
+    .well
+     .row
+      .span5.columns
+        h2 Show off your stuff
+        p Sometimes you're proud of your stuff.  Take a picture, tag your things, and share it.
+      .span5.columns
+        h2 Give reviews
+        p Got a passion?  Share the right setup for the job, and give short reviews.
+      .span5.columns
+        h2 Explore setups
+        p Some activities require the right gear, and when you're new you're curious what others use.
+      

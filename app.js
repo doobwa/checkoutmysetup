@@ -265,7 +265,7 @@ app.put('/setups/:setup/markers',function(req, res) {
 // ROUTES
 app.get('/', function (req, res) {
   if (!req.user) {
-    res.redirect('login');
+    res.render('index',{title:'checkoutmysetup.com',layout:false});
   } else {
     res.redirect('mine');
   }  
