@@ -97,8 +97,6 @@ var app = express.createServer(
   , express.session({ secret: 'notsurewhattoputhere'})
   , mongooseAuth.middleware()
 );
-var Bitly = require('node-bitly');
-
 
 app.configure( function () {
   app.set('views', __dirname + '/views');
