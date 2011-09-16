@@ -140,7 +140,7 @@ $(function(){
       "click .check"             : "toggleDone",
       "click .editbtn"           : "edit",
       "click .savebtn"           : "update",
-      "click .cancelbtn"           : "close",
+      "click .cancelbtn"         : "close",
       "click .deletebtn"         : "clear",
       "keypress .setup-input"    : "updateOnEnter"
     },
@@ -206,6 +206,7 @@ $(function(){
 
     // Remove the item, destroy the model.
     clear: function() {
+      $(this.el).remove();
       this.model.destroy();
     }
 

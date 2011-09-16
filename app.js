@@ -114,6 +114,18 @@ app.get('/users/:id',loadUser,function(req, res) {
     res.send(user);
   });
 });
+
+  // Update article
+  app.put('/users/:id', function(req, res){
+    user = req.user;
+    user.title = req.body.user.title;
+    user.body = req.body.user.body;
+    user.save(function(err) {
+      req.flash('notice', 'Updated successfully');
+      res.redirect('/article/'+req.body.article._id);
+    });
+  });
+
 app.get('/users/:id/setups',function(req, res) {
   Setup.find({user_id:req.params.id}, function (err, setups) {
     res.send(setups);
