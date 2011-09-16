@@ -6,6 +6,7 @@
     "everyauth": "0.2.18",
     "mongoose": "1.8.1",
     "mongoose-auth": "0.0.11",
-    "jade": "0.14.1"
+    "jade": "0.14.1",
+    "stylus":"0.14.0"
   }
 }
