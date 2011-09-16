@@ -302,11 +302,11 @@ app.get('/manage', function (req, res) {
 });
 app.get('/explore',function(req, res) {
   var query = Setup.find({});
-  query.limit(5);
-  query.skip(5);
+//  query.limit(5);
+//  query.skip(5);
   query.exec(function(err,setups) {
     setups = setups.map(function(setup) {
-      setup.directurl = 'setups/' + setup._id + '/';
+//      setup.directurl = 'setups/' + setup._id + '/';
       return(setup)
     });
     res.render('explore',{setups:setups.sort(randOrd),title:'explore'});
