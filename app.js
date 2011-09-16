@@ -285,13 +285,11 @@ app.post('/request',function(req,res) {
       });
     }
   });
-
 });
 app.get('/register/:email/coupon/:id', function (req, res) {
   Request.find({email:req.params.email},function(err,request) {
     if (request[0].coupon == req.params.id) {
       res.redirect('/register');
-      //, {title:'login',});
     } else {
       res.send('email/coupon code not correct');
     }
