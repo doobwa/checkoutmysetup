@@ -96,4 +96,9 @@ $(function(){
   js.src = "//connect.facebook.net/en_US/all.js#appId=151614408263382&xfbml=1";
   fjs.parentNode.insertBefore(js, fjs);
 }(document, 'script', 'facebook-jssdk'));
+function SelectAll(id)
+{
+    document.getElementById(id).focus();
+    document.getElementById(id).select();
+}
 
