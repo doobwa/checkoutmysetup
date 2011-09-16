@@ -33,8 +33,9 @@ html
        .container
           h1 Every activity has a setup.
           h1 Share yours, checkout others.
-          input.large(type='text',placeholder="email", name="email")
-          a.btn.success Request an invite
+          form(action='/request', method='POST',style="margin:0px;")
+            input.large(type='text',placeholder="your email address", name="email")
+            input.btn.success(type="submit",value="Request an invite")
   .row(style="text-align:center;margin-top:20px;")
       img(src="images/example.png",width=750)
   #intro
