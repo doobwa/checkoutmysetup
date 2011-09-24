@@ -110,31 +110,42 @@ app.configure( function () {
   app.use(express.static(__dirname + '/public'));
 });
 
+require('./settings').bootErrorConfig(app);
 
-app.get('/users/:id',loadUser,function(req, res) {
+//////////////////////////////////////////////////
+// USER API
+//////////////////////////////////////////////////
+
+// Note: creating a user id done via mongoose-auth (ie. mostly
+// blackmagic still)
+
+app.get('/api/users/:id',loadUser,function(req, res) {
   User.find({_id:req.params.id}, function (err, user) {
     res.send(user);
   });
 });
 
-  // Update article
-  app.put('/users/:id', function(req, res){
-    user = req.user;
-    user.title = req.body.user.title;
-    user.body = req.body.user.body;
-    user.save(function(err) {
-      req.flash('notice', 'Updated successfully');
-      res.redirect('/article/'+req.body.article._id);
-    });
+// Update a user
+app.put('/api/users/:id', function(req, res){
+  user = req.user;
+  user.title = req.body.user.title;
+  user.body = req.body.user.body;
+  user.save(function(err) {
+    req.flash('notice', 'Updated successfully');
+    res.redirect('/users/'+req.body.user._id);
   });
+});
 
-app.get('/users/:id/setups',function(req, res) {
+app.get('/api/users/:id/setups',function(req, res) {
   Setup.find({user_id:req.params.id}, function (err, setups) {
     res.send(setups);
   });
 });
 
-// SETUP API
+//////////////////////////////////////////////////
+// USER API
+//////////////////////////////////////////////////
+
 app.get('/setups',function(req, res) {
   if (!req.loggedIn) {
     res.redirect('/login');
