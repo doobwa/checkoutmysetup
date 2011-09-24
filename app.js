@@ -79,9 +79,10 @@ mongoose.model('Setup', SetupSchema);
 mongoose.model('Marker', MarkerSchema);
 mongoose.model('Request', RequestSchema);
 
-//mongoose.connect('mongodb://localhost/mysetup-dev');
-mongoose.connect('mongodb://chris:dingleberry@staff.mongohq.com:10076/app941158');
-//mongoose.connect('mongodb://chris:dingleberry@staff.mongohq.com:10085/setups');
+var fs = require('fs');
+var environment = process.env.NODE_ENV || 'development'
+var mongo_uri = JSON.parse( fs.readFileSync(process.cwd()+'/config.json', encoding='utf8') )[environment].mongo_uri;
+mongoose.connect(mongo_uri);
 
 User = mongoose.model('User');
 Setup = mongoose.model('Setup');
