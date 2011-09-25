@@ -1,85 +1,89 @@
 API
 =====
 
-# User API
+## User API
 
-## GET /api/user/:id
+### GET /api/user/:id
 information about the user with the provided id
 
 Response:  200 OK
 
-## PUT /api/user/:id
+### PUT /api/user/:id
 update a users information.
 
 Parameters:
+
 - title
 - body
 
-Response:  202 Accepted
+Response:  200 OK
 
-## GET /api/user/:id/setups
+### GET /api/user/:id/setups
 array of setups belong to that user
 
 Response:  200 OK
 
-# Setup API
+## Setup API
 
-## GET /api/setups
+### GET /api/setups
 array of setups for the logged in user. Might be changed to allow for
 pagination and whatnot.
 
-## GET /api/setups/:id
+### GET /api/setups/:id
 
-## POST /api/setups
+### POST /api/setups
 Create a setup
 
 Parameters:
+
 - title
 - url
 - description
 
 Response: 201 CREATED
 
-## PUT /api/setups/:id
+### PUT /api/setups/:id
 Edit a setup
 
 Parameters:
+
 - title
 - url
 - description
 
-Response: 202 OK
+Response: 200 OK
 
-## DELETE /api/setups/:id
+### DELETE /api/setups/:id
 
-Response: 202 OK
+Response: 200 OK
 
 # Markers API
 
-## GET /api/setups/:id/markers
+### GET /api/setups/:id/markers
 Get the markers for the requested setup
 
 Response: 200 OK
 
-## POST /api/setups/:id/markers
+### POST /api/setups/:id/markers
 Create a marker on a given setup
 
 Parameters:
+
 - text
 - x: x coordinate relative to setup image 
 - y: y coordinate relative to setup image
 
-Response: 202 OK
+Response: 200 OK
 
-## DELETE /api/setups/:id/markers/:marker
+### DELETE /api/setups/:id/markers/:marker
 Remove :marker from setup :id.
 
-Response: 202 OK
+Response: 200 OK
 
 TODO
 =====
-- staging heroku app and database
-- Page not found views and express errors
+- ~~staging heroku app and database~~
+- ~~Page not found views and express errors~~
 - Must be authenticated to be editing a setup
 - Bitly url not working in staging app
 - Use Facebook/Heroku integration example

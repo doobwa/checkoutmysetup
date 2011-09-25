@@ -165,7 +165,7 @@ app.get('/api/setups/:id',loadSetup,loadUser,function(req, res) {
 });
 
 // Create a setup for logged in user
-app.post('/setups',function(req, res) {
+app.post('/api/setups',function(req, res) {
   if (!req.loggedIn) {
     res.send(HTTPRequest.UNAUTHORIZED);
   } else {
@@ -291,10 +291,6 @@ function randomString(length) {
 }
 
 
-//UNIMPLEMENTED  (AND UNUSED)
-app.put('/setups/:setup/markers',function(req, res) {
- console.log('putting to markers');
-});
 
 // ROUTES
 app.get('/', function (req, res) {
