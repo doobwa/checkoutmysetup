@@ -106,11 +106,13 @@ app.configure( function () {
   app.use(express.bodyParser());
   app.use(express.methodOverride());
   app.use(require('stylus').middleware({ src: __dirname + '/public' }));
-  app.use(app.router);
+  app.use(express.logger(':method :url :status'));
   app.use(express.static(__dirname + '/public'));
+  app.use(app.router);
 });
 
 require('./settings').bootErrorConfig(app);
+HTTPStatus = require('./lib/httpstatus');
 
 //////////////////////////////////////////////////
 // USER API
@@ -131,8 +133,7 @@ app.put('/api/users/:id', function(req, res){
   user.title = req.body.user.title;
   user.body = req.body.user.body;
   user.save(function(err) {
-    req.flash('notice', 'Updated successfully');
-    res.redirect('/users/'+req.body.user._id);
+    res.send(HTTPStatus.ACCEPTED)
   });
 });
 
@@ -143,10 +144,11 @@ app.get('/api/users/:id/setups',function(req, res) {
 });
 
 //////////////////////////////////////////////////
-// USER API
+// SETUP API
 //////////////////////////////////////////////////
 
-app.get('/setups',function(req, res) {
+// Listing of setup for logged in user
+app.get('/api/setups',function(req, res) {
   if (!req.loggedIn) {
     res.redirect('/login');
   } else {
@@ -155,6 +157,8 @@ app.get('/setups',function(req, res) {
     });
   }
 });
+
+// Create a setup for logged in user
 app.post('/setups',function(req, res) {
   if (!req.loggedIn) {
     res.redirect('/login');
@@ -180,7 +184,9 @@ app.post('/setups',function(req, res) {
     res.redirect('/manage');
   }
 });
-app.delete('/setups/:id',loadSetup,andRestrictToSelf,function(req, res) {
+
+// Delete a setup
+app.delete('/api/setups/:id',loadSetup,andRestrictToSelf,function(req, res) {
    Setup.remove({_id:req.params.id}, function (err) {
      if (!err) {
        console.log('successfully removed setup'+req.params.id);
@@ -189,7 +195,8 @@ app.delete('/setups/:id',loadSetup,andRestrictToSelf,function(req, res) {
      }
    });
 });
-app.get('/setups/:id',loadSetup,loadUser,function(req, res) {
+
+app.get('/api/setups/:id',loadSetup,loadUser,function(req, res) {
   req.user.directurl = 'http://checkoutmysetup.org/users/' + req.user._id + '/';
   req.user.name = 'chris';
   res.render('view',{setup:req.setup,user:req.user,title:'view'});
