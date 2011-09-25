@@ -133,7 +133,7 @@ app.put('/api/users/:id', function(req, res){
   user.title = req.body.user.title;
   user.body = req.body.user.body;
   user.save(function(err) {
-    res.send(HTTPStatus.ACCEPTED)
+    res.send(HTTPStatus.OK)
   });
 });
 
@@ -150,7 +150,7 @@ app.get('/api/users/:id/setups',function(req, res) {
 // Listing of setup for logged in user
 app.get('/api/setups',function(req, res) {
   if (!req.loggedIn) {
-    res.redirect('/login');
+    res.send(HTTPRequest.UNAUTHORIZED);
   } else {
     Setup.find({user_id:req.user.id},function(err,docs) {
       res.send(docs);
@@ -158,10 +158,16 @@ app.get('/api/setups',function(req, res) {
   }
 });
 
+// Get a single setup for logged in user
+app.get('/api/setups/:id',loadSetup,loadUser,function(req, res) {
+  req.user.name = 'chris';
+  res.render('view',{setup:req.setup,user:req.user,title:'view'});
+});
+
 // Create a setup for logged in user
 app.post('/setups',function(req, res) {
   if (!req.loggedIn) {
-    res.redirect('/login');
+    res.send(HTTPRequest.UNAUTHORIZED);
   } else {
     var s = new Setup({
       title:req.body.title,
@@ -170,7 +176,7 @@ app.post('/setups',function(req, res) {
       user_id: req.user._id
     });
     s.save(function (err) {
-      if (!err) console.log('Success!');
+      if (err) res.send(HTTPStatus.INTERNAL_SERVER_ERROR);
     });
     var Bitly = require(__dirname + '/lib/Bitly.js').Bitly;
     var bitly = new Bitly('o_6jbulg1k1i', 'R_3767b0d251e41099f97bf79bdd3ba0d7');
@@ -178,49 +184,65 @@ app.post('/setups',function(req, res) {
       s.shorturl = result.data.url;
       console.log(s.shorturl);
       s.save(function (err) {
-        if (!err) console.log('Short url created.');
+        if (err) res.send(HTTPStatus.INTERNAL_SERVER_ERROR);
       });
     });
-    res.redirect('/manage');
+    res.send(HTTPStatus.CREATED);
   }
+});
+
+// Edit a setup
+app.put('/api/setups/:id',loadSetup,andRestrictToSelf,function(req, res) {
+  req.setup.title = req.body.title;
+  req.setup.url = req.body.url;
+  req.setup.description = req.body.description;
+  req.setup.save(function (err) {
+    if (err) res.send(HTTPRequest.INTERNAL_SERVER_ERROR);
+  });
+  res.send(HTTPRequest.OK)
 });
 
 // Delete a setup
 app.delete('/api/setups/:id',loadSetup,andRestrictToSelf,function(req, res) {
    Setup.remove({_id:req.params.id}, function (err) {
      if (!err) {
-       console.log('successfully removed setup'+req.params.id);
+       res.send(HTTPRequest.OK);
      } else {
-       console.log('failed to remove setup'+req.params.id);
+       res.send(HTTPRequest.INTERNAL_SERVER_ERROR);
      }
    });
 });
 
-app.get('/api/setups/:id',loadSetup,loadUser,function(req, res) {
-  req.user.directurl = 'http://checkoutmysetup.org/users/' + req.user._id + '/';
-  req.user.name = 'chris';
-  res.render('view',{setup:req.setup,user:req.user,title:'view'});
+
+//////////////////////////////////////////////////
+// MARKERS API
+//////////////////////////////////////////////////
+
+// Get all the markers for a given setup
+app.get('/api/setups/:id/markers',loadSetup,function(req, res) {
+  res.send(req.setup.markers);
 });
-app.get('/setups/:id/edit',loadSetup,loadUser,andRestrictToSelf,function(req, res) {
-//  console.log(req.user);
-  req.setup.directurl = 'setups/' + req.setup._id + '/';
-  req.user.directurl = 'users/' + req.user._id + '/';
-  res.render('edit',{setup:req.setup,user:req.user,title:'edit setup'});
+
+// Create a marker on a given setup
+app.post('/api/setups/:id/markers',loadSetup,andRestrictToSelf,function(req, res) {
+  req.setup.markers.push({text:req.body.text,x:req.body.x,y:req.body.y});
+  req.setup.save();
+  res.send(HTTPStatus.OK);
 });
-app.put('/setups/:id',loadSetup,andRestrictToSelf,function(req, res) {
-  req.setup.title = req.body.title;
-  req.setup.url = req.body.url;
-  req.setup.description = req.body.description;
-  // Make a short url via bit.ly
-  req.setup.shorturl = 'http://api.bitly.com/v3/shorten?login=chrisdubois&apiKey=R_46c7bee365ae8711c76b255cd45551ed&longUrl=http%3A%2F%2Fbetaworks.com%2F&format=json';
+
+// Delete a marker
+app.delete('/api/setups/:id/markers/:marker',loadSetup,andRestrictToSelf,function(req, res) {
+  req.setup.markers.id(req.params.marker).remove();
   req.setup.save(function (err) {
-    if (!err) console.log('Setup updated to:'+req.setup.title);
+    if (err) res.send(HTTPStatus.INTERNAL_SERVER_ERROR);
+    else res.send(HTTPStatus.OK);
   });
-//  res.redirect('/manage');
 });
 
-
+//////////////////////////////////////////////////
 // UTILITY FUNCTIONS
+//////////////////////////////////////////////////
+
 function randOrd(){
   return (Math.round(Math.random())-0.5); 
 }
@@ -268,23 +290,6 @@ function randomString(length) {
     return str;
 }
 
-// MARKERS API
-
-app.get('/setups/:id/markers',loadSetup,function(req, res) {
-  res.send(req.setup.markers);
-});
-app.post('/setups/:id/markers',loadSetup,andRestrictToSelf,function(req, res) {
-  req.setup.markers.push({text:req.body.text,x:req.body.x,y:req.body.y});
-  req.setup.save();
-  res.send(req.setup.markers);
-});
-app.delete('/setups/:id/markers/:marker',loadSetup,andRestrictToSelf,function(req, res) {
-  req.setup.markers.id(req.params.marker).remove();
-  req.setup.save(function (err) {
-    if (!err) console.log('removal successful');
-    else console.log('remove failed');
-  });
-});
 
 //UNIMPLEMENTED  (AND UNUSED)
 app.put('/setups/:setup/markers',function(req, res) {
