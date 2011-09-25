@@ -121,26 +121,49 @@ HTTPStatus = require('./lib/httpstatus');
 // Note: creating a user id done via mongoose-auth (ie. mostly
 // blackmagic still)
 
-// Get a user's information
-app.get('/api/users/:id',loadUser,function(req, res) {
-  res.send(req.user);
-});
-
-// Update a user for the logged in user
-app.put('/api/users/:id',loadUser, andRestrictToSelf, function(req, res){
-  user = req.user;
-  user.title = req.body.user.title;
-  user.body = req.body.user.body;
-  user.save(function(err) {
-    res.send(HTTPStatus.OK)
+app.param('userid', function(req, res, next, id){
+  User.findOne({ _id : req.params.userid }, function(err,user) {
+    if (err) return next(err);
+    if (!user) return res.send(HTTPStatus.INTERNAL_SERVER_ERROR);
+    // note: not named req.user to avoid conflict with mongoose-auth
+    req.requestedUser = user;  
+    next();
   });
+})
+
+// Get a user's information
+app.get('/api/users/:userid',function(req, res) {
+  res.send(req.requestedUser);
 });
 
 // Get the setups for a particular user
-app.get('/api/users/:id/setups',function(req, res) {
+app.get('/api/users/:userid/setups',function(req, res) {
   Setup.find({user_id:req.params.id}, function (err, setups) {
     res.send(setups);
   });
+});
+
+// Update a user for the logged in user
+app.put('/api/users/:userid',andRestrictToSelf, function(req, res){
+  user = req.requestedUser;
+  user.title = req.body.user.title;
+  user.body = req.body.user.body;
+  user.save(function(err) {
+    if (err) res.send(HTTPStatus.INTERNAL_SERVER_ERROR);
+    else res.send(HTTPStatus.OK)
+  });
+});
+
+// Delete the currently logged in user
+app.delete('/api/users/:userid',andRestrictToSelf,function(req, res) {
+  res.send(HTTPStatus.NOT_IMPLEMENTED);
+   // Setup.remove({_id:req.params.id}, function (err) {
+   //   if (!err) {
+   //     res.send(HTTPStatus.OK);
+   //   } else {
+   //     res.send(HTTPStatus.INTERNAL_SERVER_ERROR);
+   //   }
+   // });
 });
 
 //////////////////////////////////////////////////
@@ -150,7 +173,7 @@ app.get('/api/users/:id/setups',function(req, res) {
 app.param('setupid', function(req, res, next, id){
   Setup.findOne({ _id : req.params.setupid }, function(err,setup) {
     if (err) return next(err);
-    if (!setup) return next(new Error('Failed to load article ' + id));
+    if (!setup) return res.send(HTTPStatus.INTERNAL_SERVER_ERROR);
     req.setup = setup;
     next();
   });
@@ -169,10 +192,7 @@ app.get('/api/setups/:setupid',function(req, res) {
 });
 
 // Create a setup for the logged in user
-app.post('/api/setups',function(req, res) {
-  if (!req.loggedIn) {
-    res.send(HTTPRequest.UNAUTHORIZED);
-  } else {
+app.post('/api/setups',andRestrictToSelf,function(req, res) {
     var s = new Setup({
       title:req.body.title,
       url: req.body.url,
@@ -192,7 +212,6 @@ app.post('/api/setups',function(req, res) {
       });
     });
     res.send(HTTPStatus.CREATED);
-  }
 });
 
 // Edit a setup
@@ -201,18 +220,18 @@ app.put('/api/setups/:setupid',andRestrictToSelf,function(req, res) {
   req.setup.url = req.body.url;
   req.setup.description = req.body.description;
   req.setup.save(function (err) {
-    if (err) res.send(HTTPRequest.INTERNAL_SERVER_ERROR);
+    if (err) res.send(HTTPStatus.INTERNAL_SERVER_ERROR);
   });
-  res.send(HTTPRequest.OK)
+  res.send(HTTPStatus.OK);
 });
 
 // Delete a setup
 app.delete('/api/setups/:setupid',andRestrictToSelf,function(req, res) {
    Setup.remove({_id:req.params.id}, function (err) {
      if (!err) {
-       res.send(HTTPRequest.OK);
+       res.send(HTTPStatus.OK);
      } else {
-       res.send(HTTPRequest.INTERNAL_SERVER_ERROR);
+       res.send(HTTPStatus.INTERNAL_SERVER_ERROR);
      }
    });
 });
@@ -223,12 +242,12 @@ app.delete('/api/setups/:setupid',andRestrictToSelf,function(req, res) {
 //////////////////////////////////////////////////
 
 // Get all the markers for a given setup
-app.get('/api/setups/:id/markers',loadSetup,function(req, res) {
+app.get('/api/setups/:setupid/markers',function(req, res) {
   res.send(req.setup.markers);
 });
 
-// Create a marker on a given setup
-app.post('/api/setups/:id/markers',loadSetup,andRestrictToSelf,function(req, res) {
+// Create a marker on a given setup for the logged in user
+app.post('/api/setups/:setupid/markers',andRestrictToSelf,function(req, res) {
   req.setup.markers.push({text:req.body.text,x:req.body.x,y:req.body.y});
   req.setup.save(function (err) {
     if (err) res.send(HTTPStatus.INTERNAL_SERVER_ERROR);
@@ -237,7 +256,7 @@ app.post('/api/setups/:id/markers',loadSetup,andRestrictToSelf,function(req, res
 });
 
 // Delete a marker
-app.delete('/api/setups/:id/markers/:marker',loadSetup,andRestrictToSelf,function(req, res) {
+app.delete('/api/setups/:setupid/markers/:markerid',andRestrictToSelf,function(req, res) {
   req.setup.markers.id(req.params.marker).remove();
   req.setup.save(function (err) {
     if (err) res.send(HTTPStatus.INTERNAL_SERVER_ERROR);
@@ -256,31 +275,10 @@ function andRestrictToSelf(req, res, next) {
   if (req.user) {
    req.user.id == req.setup.user_id
     ? next()
-    : next(new Error('Unauthorized'));
+    : res.send(HTTPStatus.UNAUTHORIZED);
   } else {
-    next(new Error('Not logged in'));
+    res.send(HTTPStatus.UNAUTHORIZED);
   }
-}
-function loadSetup(req, res, next) {
-  Setup.findById(req.params.id, function (err, setup) {
-    if (!err) {
-      req.setup = setup;
-      req.userid = setup.user_id;
-      next();
-    } else {
-      next(new Error('Failed to load setup ' + req.params.id));
-    }
-  });
-}
-function loadUser(req, res, next) {
-  User.findById(req.userid, function (err, user) {
-    if (!err) {
-      req.user = user;
-      next();
-    } else {
-      next(new Error('Failed to load user ' + req.userid));
-    }
-  });
 }
 function randomString(length) {
     var chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz'.split('');

@@ -1,14 +1,18 @@
 API
 =====
 
+Most of this API has been hastily tested using the 'http-console'
+project: https://github.com/cloudhead/http-console.  None of the
+authentication-requiring methods are tested yet.
+
 ## User API
 
-### GET /api/user/:id
+### GET /api/user/:userid
 information about the user with the provided id
 
 Response:  200 OK
 
-### PUT /api/user/:id
+### PUT /api/user/:userid
 update a users information.
 
 Parameters:
@@ -18,6 +22,11 @@ Parameters:
 
 Response:  200 OK
 
+### DELETE /api/user/:userid
+Delete the currently logged in user's information.
+
+Response: 501 NOT IMPLEMENTED
+
 ### GET /api/user/:id/setups
 array of setups belong to that user
 
@@ -26,13 +35,13 @@ Response:  200 OK
 ## Setup API
 
 ### GET /api/setups
-array of setups for the logged in user. Might be changed to allow for
-pagination and whatnot.
+array of setups. (Might be changed to allow for
+pagination and whatnot.)
 
-### GET /api/setups/:id
+### GET /api/setups/:setupid
 
 ### POST /api/setups
-Create a setup
+Create a setup for the logged in user.
 
 Parameters:
 
@@ -42,8 +51,8 @@ Parameters:
 
 Response: 201 CREATED
 
-### PUT /api/setups/:id
-Edit a setup
+### PUT /api/setups/:setupid
+Edit a setup owned by the logged in user.
 
 Parameters:
 
@@ -53,19 +62,20 @@ Parameters:
 
 Response: 200 OK
 
-### DELETE /api/setups/:id
+### DELETE /api/setups/:setupid
+Delete a setup owned by the logged in user.
 
 Response: 200 OK
 
 # Markers API
 
-### GET /api/setups/:id/markers
+### GET /api/setups/:setupid/markers
 Get the markers for the requested setup
 
 Response: 200 OK
 
-### POST /api/setups/:id/markers
-Create a marker on a given setup
+### POST /api/setups/:setupid/markers
+Create a marker on a given setup belonging to the logged in user
 
 Parameters:
 
@@ -75,8 +85,8 @@ Parameters:
 
 Response: 200 OK
 
-### DELETE /api/setups/:id/markers/:marker
-Remove :marker from setup :id.
+### DELETE /api/setups/:setupid/markers/:markerid
+Remove a marker from a setup belonging to the logged in user
 
 Response: 200 OK
 

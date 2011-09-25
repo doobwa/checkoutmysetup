@@ -6,9 +6,7 @@ var vows = require('vows'),
  
 var HOST = 'localhost',
     PORT = 3000;
- 
-var suite = vows.describe('My API Security'),
-    browser = zombie.createBrowser(PORT, HOST);
+
  
 var client = {
   get: function(path, header, callback) {
@@ -70,6 +68,12 @@ function assertHeaders(error, errorDescription) {
   }
 }
  
+ 
+var suite = vows.describe('API Interaction'),
+    browser = zombie.Browser({});
+browser.runScripts = false;
+browser.on('error',function (err){console.log(err.stack)});
+
 suite.addBatch({
   'GET /resource/1 authorized': respondsWith({ status: 200 }),
   'GET /resource/1 un@vth0riz3d': respondsWith({ status: 401, error: 'invalid_token', errorDescription: 'The access token is invalid' }),
