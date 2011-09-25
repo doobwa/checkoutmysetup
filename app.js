@@ -121,14 +121,13 @@ HTTPStatus = require('./lib/httpstatus');
 // Note: creating a user id done via mongoose-auth (ie. mostly
 // blackmagic still)
 
+// Get a user's information
 app.get('/api/users/:id',loadUser,function(req, res) {
-  User.find({_id:req.params.id}, function (err, user) {
-    res.send(user);
-  });
+  res.send(req.user);
 });
 
-// Update a user
-app.put('/api/users/:id', function(req, res){
+// Update a user for the logged in user
+app.put('/api/users/:id',loadUser, andRestrictToSelf, function(req, res){
   user = req.user;
   user.title = req.body.user.title;
   user.body = req.body.user.body;
@@ -137,6 +136,7 @@ app.put('/api/users/:id', function(req, res){
   });
 });
 
+// Get the setups for a particular user
 app.get('/api/users/:id/setups',function(req, res) {
   Setup.find({user_id:req.params.id}, function (err, setups) {
     res.send(setups);
@@ -147,24 +147,28 @@ app.get('/api/users/:id/setups',function(req, res) {
 // SETUP API
 //////////////////////////////////////////////////
 
-// Listing of setup for logged in user
+app.param('setupid', function(req, res, next, id){
+  Setup.findOne({ _id : req.params.setupid }, function(err,setup) {
+    if (err) return next(err);
+    if (!setup) return next(new Error('Failed to load article ' + id));
+    req.setup = setup;
+    next();
+  });
+})
+
+// Array of setups 
 app.get('/api/setups',function(req, res) {
-  if (!req.loggedIn) {
-    res.send(HTTPRequest.UNAUTHORIZED);
-  } else {
-    Setup.find({user_id:req.user.id},function(err,docs) {
-      res.send(docs);
-    });
-  }
+  Setup.find({},function(err,docs) {
+    res.send(docs);
+  });
 });
 
-// Get a single setup for logged in user
-app.get('/api/setups/:id',loadSetup,loadUser,function(req, res) {
-  req.user.name = 'chris';
-  res.render('view',{setup:req.setup,user:req.user,title:'view'});
+// Get a single setup 
+app.get('/api/setups/:setupid',function(req, res) {
+  res.send(req.setup);
 });
 
-// Create a setup for logged in user
+// Create a setup for the logged in user
 app.post('/api/setups',function(req, res) {
   if (!req.loggedIn) {
     res.send(HTTPRequest.UNAUTHORIZED);
@@ -192,7 +196,7 @@ app.post('/api/setups',function(req, res) {
 });
 
 // Edit a setup
-app.put('/api/setups/:id',loadSetup,andRestrictToSelf,function(req, res) {
+app.put('/api/setups/:setupid',andRestrictToSelf,function(req, res) {
   req.setup.title = req.body.title;
   req.setup.url = req.body.url;
   req.setup.description = req.body.description;
@@ -203,7 +207,7 @@ app.put('/api/setups/:id',loadSetup,andRestrictToSelf,function(req, res) {
 });
 
 // Delete a setup
-app.delete('/api/setups/:id',loadSetup,andRestrictToSelf,function(req, res) {
+app.delete('/api/setups/:setupid',andRestrictToSelf,function(req, res) {
    Setup.remove({_id:req.params.id}, function (err) {
      if (!err) {
        res.send(HTTPRequest.OK);
@@ -226,7 +230,9 @@ app.get('/api/setups/:id/markers',loadSetup,function(req, res) {
 // Create a marker on a given setup
 app.post('/api/setups/:id/markers',loadSetup,andRestrictToSelf,function(req, res) {
   req.setup.markers.push({text:req.body.text,x:req.body.x,y:req.body.y});
-  req.setup.save();
+  req.setup.save(function (err) {
+    if (err) res.send(HTTPStatus.INTERNAL_SERVER_ERROR);
+  });
   res.send(HTTPStatus.OK);
 });
 
@@ -256,25 +262,25 @@ function andRestrictToSelf(req, res, next) {
   }
 }
 function loadSetup(req, res, next) {
- Setup.findById(req.params.id, function (err, setup) {
-  if (!err) {
-    req.setup = setup;
-    req.userid = setup.user_id;
-    next();
-  } else {
-    next(new Error('Failed to load setup ' + req.params.id));
-  }
+  Setup.findById(req.params.id, function (err, setup) {
+    if (!err) {
+      req.setup = setup;
+      req.userid = setup.user_id;
+      next();
+    } else {
+      next(new Error('Failed to load setup ' + req.params.id));
+    }
   });
 }
 function loadUser(req, res, next) {
- User.findById(req.userid, function (err, user) {
-  if (!err) {
-    req.user = user;
-    next();
-  } else {
-    next(new Error('Failed to load user ' + req.userid));
-  }
- });
+  User.findById(req.userid, function (err, user) {
+    if (!err) {
+      req.user = user;
+      next();
+    } else {
+      next(new Error('Failed to load user ' + req.userid));
+    }
+  });
 }
 function randomString(length) {
     var chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz'.split('');

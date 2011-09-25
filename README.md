@@ -96,17 +96,24 @@ TODO
 Useful commands
 ======
 
-### Pushing a local branch github (e.g. api-reorg)
-git push github api-reorg
+### Pushing a local branch to github
+git push github mybranch
 
 ### Push to staging
 git checkout staging
+
 get merge other-branch
+
 git push github 
+
 git push heroku-staging staging:master
 
 ### Push to production
+
 git checkout master
+
 git merge staging
+
 git push github
+
 git push heroku
