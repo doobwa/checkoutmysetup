@@ -92,7 +92,7 @@ $(function(){
 
     // Save all of the setup items under the `"setups"` namespace.
     url: function() {
-      return 'setups';
+      return 'api/setups';
     },
 //    localStorage: new Store("setups"),
 
@@ -224,7 +224,7 @@ $(function(){
 
     // Delegated events for creating new items, and clearing completed ones.
     events: {
-
+      "click .savesetup"             : "createSetup",
     },
 
     // At initialization we bind to the relevant events on the `Setups`
@@ -261,12 +261,20 @@ $(function(){
     },
 
     // If you hit return in the main input field, and there is text to save,
-    // create new **Setup** model persisting it to *localStorage*.
     createOnEnter: function(e) {
       var text = this.input.val();
       if (!text || e.keyCode != 13) return;
       Setups.create({text: text});
       this.input.val('');
+    },
+    createSetup: function(e) {
+      var title = this.$("#new-setup-title").val();
+      var url = this.$("#new-setup-url").val();
+      var desc = this.$("#new-setup-desc").val();
+      Setups.create({title:title,url:url,description:desc});
+      this.$("#new-setup-title").val('');
+      this.$("#new-setup-url").val('');
+      this.$("#new-setup-desc").val('');
     },
 
   });

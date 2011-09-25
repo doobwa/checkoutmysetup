@@ -5,11 +5,15 @@ var conf = require('./conf');
 var everyauth = require('everyauth')
   , Promise = everyauth.Promise;
 
-everyauth.debug = true;
+everyauth.debug = false;
 
 var mongoose = require('mongoose')
   , Schema = mongoose.Schema
   , ObjectId = mongoose.SchemaTypes.ObjectId;
+
+/////////////////////////
+// Database Schema 
+/////////////////////////
 
 var MarkerSchema = new Schema({
     description     : String
@@ -89,7 +93,9 @@ Setup = mongoose.model('Setup');
 Marker = mongoose.model('Marker');
 Request = mongoose.model('Request');
 
-//var Resource = require('express-resource');
+//////////////////////////////
+// Configuration
+//////////////////////////////
 
 var app = express.createServer(
     express.bodyParser()
@@ -111,7 +117,9 @@ app.configure( function () {
   app.use(app.router);
 });
 
-require('./settings').bootErrorConfig(app);
+// TODO: Need to uncomment this in order to get 404 and 500 pages
+// working again, but it seemed to conflict with mongoose-auth.
+//require('./settings').bootErrorConfig(app);
 HTTPStatus = require('./lib/httpstatus');
 
 //////////////////////////////////////////////////
@@ -192,7 +200,7 @@ app.get('/api/setups/:setupid',function(req, res) {
 });
 
 // Create a setup for the logged in user
-app.post('/api/setups',andRestrictToSelf,function(req, res) {
+app.post('/api/setups',function(req, res) {
     var s = new Setup({
       title:req.body.title,
       url: req.body.url,
@@ -227,7 +235,7 @@ app.put('/api/setups/:setupid',andRestrictToSelf,function(req, res) {
 
 // Delete a setup
 app.delete('/api/setups/:setupid',andRestrictToSelf,function(req, res) {
-   Setup.remove({_id:req.params.id}, function (err) {
+   Setup.remove({_id:req.params.setupid}, function (err) {
      if (!err) {
        res.send(HTTPStatus.OK);
      } else {
@@ -338,11 +346,13 @@ app.get('/explore',function(req, res) {
 //  query.skip(5);
   query.exec(function(err,setups) {
     setups = setups.map(function(setup) {
-//      setup.directurl = 'setups/' + setup._id + '/';
       return(setup)
     });
     res.render('explore',{setups:setups.sort(randOrd),title:'explore'});
   });
+});
+app.get('/setups/:setupid/edit',andRestrictToSelf,function(req, res) {
+  res.render('edit',{setup:req.setup,title:'edit'});
 });
 app.get('/mine',function(req, res) {
   if (!req.user) {

@@ -6,26 +6,6 @@
 // Load the application once the DOM is ready, using `jQuery.ready`:
 $(function(){
 
-  // Marker Model
-  // ----------
-
-//   window.Subsetup = Backbone.Model.extend({
-// //     url : function() {
-// // //      return '/';
-// //       return  '/setups/' + setupid;
-// //       //
-// //     },
-// //     defaults: function() {
-// //       return {
-// //         // title:'racing bicycle',
-// //         // description:"I've been racing for 5 years ago. This is the setup that I've decided is the best all around racer."
-// //       };
-// //     },
-//     urlRoot : '/setups/' + setupid,
-//     initialize: function(attributes) { 
-//       this.id = attributes['_id']; 
-//     }
-//   });
 
   window.Marker = Backbone.Model.extend({
 

@@ -32,6 +32,8 @@ script#setup-template(type="text/template")
       a(href="#").btn.primary.savebtn(style="margin:2px;") save
       a(href="#").btn.cancelbtn cancel
 
+
+
 - if (!everyauth.loggedIn)
   .row
     .span8.columns
@@ -61,7 +63,20 @@ script#setup-template(type="text/template")
        h3 add a setup
        .well
         .content
-          .forms
+          #addsetup
+            //
+             .display
+              a.addbtn(href="#") add a setup
+            .edit
+              .forms
+                 form
+                   input#new-setup-title.large(type='text', name="title", placeholder="title")
+                   input#new-setup-url.large(type='text', name="url",placeholder="photo url")
+                   textarea#new-setup-desc.large.clearfix(type='text', name="description",placeholder="description",rows=6)
+                   a.btn.success.savesetup Save
+                   p Looking to upload a photo?  Try <a href="http://imgur.com">imgur</a>.
+
+          //.forms
               form(action='/setups', method='POST')
                 input.large(type='text', name="title", placeholder="title")
                 input.large(type='text', name="url",placeholder="photo url")
